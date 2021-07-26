@@ -9,6 +9,7 @@ import { Paper } from "@material-ui/core";
 import { FormControl } from "@material-ui/core";
 import { RadioGroup } from "@material-ui/core";
 import { Radio } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,9 +35,9 @@ export default function AddDog(props) {
   const [uploadedImage, setUploadedImage] = useState(
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
-  const [dogData, setDogData] = useState({ 
+  const [dogData, setDogData] = useState({
     sex: "Female",
-    owner: props.userId 
+    owner: props.userId,
   });
   const [value, setValue] = useState("Female");
   const [buttonState, setButtonState] = useState(false);
@@ -69,12 +70,7 @@ export default function AddDog(props) {
     e.preventDefault();
     console.log(dogData);
     checkFormErrors();
-    if (
-      dogData.name &&
-      dogData.breed &&
-      dogData.yob &&
-      dogData.description
-    ) {
+    if (dogData.name && dogData.breed && dogData.yob && dogData.description) {
       setButtonState(true);
       const createDog = async () => {
         try {
@@ -126,9 +122,9 @@ export default function AddDog(props) {
   };
 
   const handleChange = (e) => {
-      setValue(e.target.value);
-      setDogData({ ...dogData, sex: value });
-      console.log(dogData);
+    setValue(e.target.value);
+    setDogData({ ...dogData, sex: value });
+    console.log(dogData);
   };
 
   return (
@@ -142,7 +138,7 @@ export default function AddDog(props) {
       >
         <Grid item xs={12} md={4} lg={4}>
           <Paper elevation={5} className={classes.paper}>
-            <h2>Add your dog</h2>
+          <Typography variant="h5">Add your dog</Typography>
             <form className={classes.form} onSubmit={handleSubmit}>
               {loading ? (
                 <CircularProgress />
@@ -153,7 +149,12 @@ export default function AddDog(props) {
                   alt=""
                 />
               )}
-              <Button variant="contained" component="label">
+              <Button
+                variant="contained"
+                component="label"
+                color="secondary"
+                style={{ maxWidth: "180px", maxHeight: "25px" }}
+              >
                 Upload File
                 <input
                   type="file"

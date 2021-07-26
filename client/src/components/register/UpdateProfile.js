@@ -130,7 +130,12 @@ export default function UpdateProfile(props) {
                   alt=""
                 />
               )}
-              <Button variant="contained" component="label">
+              <Button
+                variant="contained"
+                component="label"
+                color="secondary"
+                style={{ maxWidth: "180px", maxHeight: "25px" }}
+              >
                 Upload File
                 <input
                   type="file"
