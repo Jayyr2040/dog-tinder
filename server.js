@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3003;
 const MONGODB_URI = process.env.MONGODB_URI;
+
 //=================
 // Config - Express
 //=================
@@ -30,13 +31,25 @@ mongoose.connection.once("open", () => {
   console.log("connected to mongoose...");
 });
 
+//============
+// Middleware
+//============
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 //====================
 // Config - Controller
 //====================
 app.get("/", (req, res) => {
-  res.send("test");
+  res.send("Dog Tinder");
 });
+const usersController = require("./controllers/users");
+const dogsController = require("./controllers/dogs");
+const likeEventsController = require("./controllers/likeEvents");
+app.use("/users", usersController);
+app.use("/dogs", dogsController);
+app.use("/likeevents", likeEventsController);
 
 app.listen(PORT, () => {
-  console.log("Dog matching happening on port", PORT);
+  console.log("Dog matching 🐶 happening on port", PORT);
 });
