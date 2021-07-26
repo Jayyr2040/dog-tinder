@@ -10,10 +10,6 @@ Step 3: Find Dogs whose sex is opposite of user's dog
 Step 4: Find Dogs whose breed is same as user's dog
 */
 
-// const userLocation = "North";
-// const dogBreed = "Pomeranian";
-// const dogSex = "Male";
-
 // Browse
 router.post("/", (req, res) => {
   User.find({ location: { $in: req.body.userLocation } }, (err, foundUsers) => {
