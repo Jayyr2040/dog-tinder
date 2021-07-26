@@ -19,11 +19,13 @@ const useStyles = makeStyles((theme) => ({
 
 let dogCounter = 0;
 
-const postReq = {
+const postSuggestionsReq = {
   userLocation: "North",
   dogBreed: "Pomeranian",
   dogSex: "Male",
 };
+
+const loggedInDog = "60fe1f945df2380e9c79b1bc";
 
 export default function Browse() {
   const classes = useStyles();
@@ -34,7 +36,7 @@ export default function Browse() {
     const fetchDogs = async () => {
       const res = await fetch("http://localhost:3003/browse", {
         method: "POST",
-        body: JSON.stringify(postReq),
+        body: JSON.stringify(postSuggestionsReq),
         headers: {
           "Content-Type": "application/json",
         },
@@ -55,11 +57,25 @@ export default function Browse() {
   };
 
   const chooseLike = (likedDog) => {
+    console.log(likedDog);
     console.log(`Love ${likedDog.name}!`);
     dogCounter === dogSuggestions.length - 1
       ? (dogCounter = 0)
       : (dogCounter += 1);
     setCurrentDog(dogSuggestions[dogCounter]);
+
+    const likeDog = async () => {
+      const res = await fetch("http://localhost:3003/likeevents", {
+        method: "POST",
+        body: JSON.stringify({ liker: loggedInDog, likee: likedDog._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+    };
+    likeDog();
   };
 
   return (
