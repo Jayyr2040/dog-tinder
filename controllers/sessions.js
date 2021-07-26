@@ -11,6 +11,7 @@ router.get("/new", (req, res) => {
    });
 
 router.post("/", (req, res) => {
+
     User.findOne({username: req.body.username},(err,foundUser) => {
         if (err) {
             console.log(err);
@@ -25,8 +26,9 @@ router.post("/", (req, res) => {
               (error, foundDogs) => {
                 console.log("found dog", foundDogs);
               req.session.dog = foundDogs;
+              res.send(req.session);
             });
-            res.send(req.session);
+            // res.send(req.session);
             } else {
                 res.send('<a href="/"> password does not match </a>');
               }
@@ -37,7 +39,7 @@ router.post("/", (req, res) => {
    router.delete("/", (req, res) => {
     console.log("log out user", req.session.currentUser);
     req.session.destroy(() => {
-      res.redirect("/");
+      // res.redirect("/");
     });
   });
   

@@ -14,17 +14,19 @@ const useStyles = makeStyles({
   },
 });
 
-export default function NewSessions() {
+export default function NewSessions(props) {
   const classes = useStyles();
   const [signUp, setSignUp] = useState({
     username: "",
     password: "",
   });
+
+
   
   const handleSubmit = (e) => {
     e.preventDefault();
    
-      console.log(JSON.stringify(signUp));
+    //  console.log(JSON.stringify(signUp));
       const createNewLogin = async () => {
         const res = await fetch("http://localhost:3003/sessions", {
           method: "POST",
@@ -35,16 +37,17 @@ export default function NewSessions() {
         });
         const data = await res.json();
         console.log("user", data.currentUser);
-        console.log("dog", data.dog);
+        console.log("dog", data.dog._id);
+        props.setCurrentData(data.dog._id);
       };
       createNewLogin();
     
   };
 
-/*   const handleDelete = (e) => {
+const handleDelete = (e) => {
     e.preventDefault();
    
-      console.log(JSON.stringify(signUp));
+    //  console.log(JSON.stringify(signUp));
       const deleteLogin = async () => {
         const res = await fetch("http://localhost:3003/sessions", {
           method: "DELETE",
@@ -54,7 +57,7 @@ export default function NewSessions() {
       deleteLogin();
     
   };
- */
+
 
   return (
     <Container>
@@ -91,7 +94,7 @@ export default function NewSessions() {
           Login
         </Button>
       </form>
-      {/* <Button
+      <Button
           type="submit"
           className={classes.field}
           color="secondary"
@@ -100,8 +103,8 @@ export default function NewSessions() {
           onClick={handleDelete}
         >
           Login Out
-        </Button> */}
-       
+        </Button>
+       {props.currentData}
     </Container>
   );
 }

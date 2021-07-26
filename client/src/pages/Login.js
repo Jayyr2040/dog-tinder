@@ -4,10 +4,11 @@ import "../App.css";
 
 function Login() {
 
+  const [currentData,setCurrentData] = useState();
 
   return (
     <div className="App">
-        <NewSessions/>
+        <NewSessions setCurrentData={setCurrentData} currentData={currentData}/>
     </div>
   );
 }

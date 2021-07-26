@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 3003;
 const MONGODB_URI = process.env.MONGODB_URI;
 const cors = require("cors");
 const session = require("express-session");
-const methodOverride = require('method-override');
 
 //=================
 // Config - Express
@@ -40,7 +39,6 @@ mongoose.connection.once("open", () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
-app.use(methodOverride("_method"));
 app.use(session({secret: process.env.SECRET, resave: false, saveUninitialized: false,}));
 
 //====================
