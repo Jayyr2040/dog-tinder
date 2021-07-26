@@ -124,7 +124,7 @@ export default function AddDog(props) {
           className={classes.field}
         />
         <br />
-        <input
+        {/* <input
           id="fileInput"
           type="file"
           name="image"
@@ -133,16 +133,16 @@ export default function AddDog(props) {
           className="form-input"
         />
         {previewSource && (
-          <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
-        )}
-        {/* <TextField
+          <img src={previewSource} alt="chosen" style={{ height: "280px", width: "280px" }} />
+        )} */}
+        <TextField
           onChange={(e) => setDogData({ ...dogData, image: e.target.value })}
           label="Image"
           className={classes.field}
           variant="outlined"
           error={dogImageError}
           fullWidth
-        /> */}
+        />
         <TextField
           onChange={(e) => setDogData({ ...dogData, breed: e.target.value })}
           label="Breed"
