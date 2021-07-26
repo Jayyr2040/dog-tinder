@@ -48,9 +48,11 @@ app.get("/", (req, res) => {
 const usersController = require("./controllers/users");
 const dogsController = require("./controllers/dogs");
 const likeEventsController = require("./controllers/likeEvents");
+const browseController = require("./controllers/browse");
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
+app.use("/browse", browseController);
 
 app.listen(PORT, () => {
   console.log("Dog matching 🐶 happening on port", PORT);
