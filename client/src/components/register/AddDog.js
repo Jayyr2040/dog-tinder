@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { FormControlLabel, FormLabel, makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
+import { FormControl } from "@material-ui/core";
+import { RadioGroup } from "@material-ui/core";
+import { Radio } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -18,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
   field: {
     marginTop: 10,
   },
+  formControl: {
+    margin: theme.spacing(3),
+  },
+  group: {
+    margin: theme.spacing(1, 0),
+  },
 }));
 
 export default function AddDog(props) {
@@ -25,19 +34,21 @@ export default function AddDog(props) {
   const [uploadedImage, setUploadedImage] = useState(
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
-  const [dogData, setDogData] = useState({ owner: props.userId });
+  const [dogData, setDogData] = useState({ 
+    sex: "Female",
+    owner: props.userId 
+  });
+  const [value, setValue] = useState("Female");
   const [buttonState, setButtonState] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dogNameError, setDogNameError] = useState(false);
   const [breedError, setBreedError] = useState(false);
-  const [sexError, setSexError] = useState(false);
   const [yobError, setYobError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
 
   const checkFormErrors = () => {
     setDogNameError(false);
     setBreedError(false);
-    setSexError(false);
     setYobError(false);
     setDescriptionError(false);
     if (dogData.name === "") {
@@ -46,11 +57,8 @@ export default function AddDog(props) {
     if (dogData.breed === "") {
       setBreedError(true);
     }
-    if (dogData.sex === "") {
-      setBreedError(true);
-    }
     if (dogData.yob === 0) {
-      setBreedError(true);
+      setYobError(true);
     }
     if (dogData.description === "") {
       setDescriptionError(true);
@@ -63,9 +71,7 @@ export default function AddDog(props) {
     checkFormErrors();
     if (
       dogData.name &&
-      dogData.image &&
       dogData.breed &&
-      dogData.sex &&
       dogData.yob &&
       dogData.description
     ) {
@@ -117,6 +123,12 @@ export default function AddDog(props) {
       setLoading(false);
     };
     fetchImageURL();
+  };
+
+  const handleChange = (e) => {
+      setValue(e.target.value);
+      setDogData({ ...dogData, sex: value });
+      console.log(dogData);
   };
 
   return (
@@ -173,16 +185,6 @@ export default function AddDog(props) {
               />
               <TextField
                 onChange={(e) =>
-                  setDogData({ ...dogData, sex: e.target.value })
-                }
-                label="Sex"
-                variant="outlined"
-                error={sexError}
-                className={classes.field}
-                fullWidth
-              />
-              <TextField
-                onChange={(e) =>
                   setDogData({ ...dogData, yob: e.target.value })
                 }
                 label="Year of Birth"
@@ -204,6 +206,28 @@ export default function AddDog(props) {
                 className={classes.field}
                 error={descriptionError}
               />
+              <FormControl component="fieldset" className={classes.formControl}>
+                <FormLabel component="legend">Sex</FormLabel>
+                <RadioGroup
+                  className={classes.group}
+                  aria-label="gender"
+                  name="gender1"
+                  value={value}
+                  onChange={handleChange}
+                  row
+                >
+                  <FormControlLabel
+                    value="Male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                  <FormControlLabel
+                    value="Female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                </RadioGroup>
+              </FormControl>
               <Button
                 type="submit"
                 color="secondary"

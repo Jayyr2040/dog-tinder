@@ -26,25 +26,20 @@ export default function UpdateProfile(props) {
   const [updateUser, setUpdateUser] = useState();
   const [buttonState, setButtonState] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(
-    "https://image.flaticon.com/icons/png/512/2102/2102633.png"
+    "https://image.flaticon.com/icons/png/512/848/848043.png"
   );
   const [loading, setLoading] = useState(false);
   const [fullNameError, setfullNameError] = useState(false);
-  // const [imageError, setImageError] = useState(false);
   const [locationError, setLocationError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
 
   const checkFormErrors = () => {
     setfullNameError(false);
-    // setImageError(false);
     setLocationError(false);
     setDescriptionError(false);
     if (updateUser.fullName === "") {
       setfullNameError(true);
     }
-    // if (updateUser.image === "") {
-    //   setImageError(true);
-    // }
     if (updateUser.location === "") {
       setLocationError(true);
     }
@@ -156,17 +151,6 @@ export default function UpdateProfile(props) {
                 fullWidth
               />{" "}
               <br />
-              {/* <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, image: e.target.value })
-                }
-                className={classes.field}
-                label="Image"
-                variant="outlined"
-                fullWidth
-                error={imageError}
-              />
-              <br /> */}
               <TextField
                 onChange={(e) =>
                   setUpdateUser({ ...updateUser, location: e.target.value })
