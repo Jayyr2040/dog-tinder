@@ -15,6 +15,9 @@ const useStyles = makeStyles({
 
 export default function AddDog(props) {
   const classes = useStyles();
+  const [fileInputState, setFileInputState] = useState("");
+  const [previewSource, setPreviewSource] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
   const [dogData, setDogData] = useState({
     name: "",
     image: "",
@@ -24,6 +27,21 @@ export default function AddDog(props) {
     description: "",
     owner: props.userId,
   });
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    previewFile(file);
+    setSelectedFile(file);
+    setFileInputState(e.target.value);
+  };
+
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,14 +76,25 @@ export default function AddDog(props) {
           className={classes.field}
         />
         <br />
-        <TextField
+        <input
+          id="fileInput"
+          type="file"
+          name="image"
+          onChange={handleFileInputChange}
+          value={fileInputState}
+          className="form-input"
+        />
+        {previewSource && (
+          <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
+        )}
+        {/* <TextField
           onChange={(e) => setDogData({ ...dogData, image: e.target.value })}
           label="Image"
           className={classes.field}
           variant="outlined"
           error={false}
           fullWidth
-        />
+        /> */}
         <TextField
           onChange={(e) => setDogData({ ...dogData, breed: e.target.value })}
           label="Breed"
