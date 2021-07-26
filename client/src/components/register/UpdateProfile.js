@@ -105,7 +105,7 @@ export default function UpdateProfile(props) {
         <TextField
           onChange={(e) =>
             setUpdateUser({ ...updateUser, location: e.target.value })
-          }
+          } // destructure -> array setUpdateUser({ ...updateUser, location: ["North"]})
           className={classes.field}
           label="Location"
           variant="outlined"

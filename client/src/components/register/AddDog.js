@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles({
   form: {
@@ -15,22 +16,11 @@ const useStyles = makeStyles({
 
 export default function AddDog(props) {
   const classes = useStyles();
-  const [fileInputState, setFileInputState] = useState("");
-  const [previewSource, setPreviewSource] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [dogData, setDogData] = useState({
-    name: "",
-    image: "",
-    breed: "",
-    sex: "",
-    yob: 0,
-    description: "",
-    owner: props.userId,
-  });
+  const [uploadedImage, setUploadedImage] = useState("https://image.flaticon.com/icons/png/512/1581/1581594.png");
+  const [dogData, setDogData] = useState({ owner: props.userId });
   const [buttonState, setButtonState] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [dogNameError, setDogNameError] = useState(false);
-  const [dogImageError, setDogImageError] = useState(false);
   const [breedError, setBreedError] = useState(false);
   const [sexError, setSexError] = useState(false);
   const [yobError, setYobError] = useState(false);
@@ -38,16 +28,12 @@ export default function AddDog(props) {
 
   const checkFormErrors = () => {
     setDogNameError(false);
-    setDogImageError(false);
     setBreedError(false);
     setSexError(false);
     setYobError(false);
     setDescriptionError(false);
     if (dogData.name === "") {
       setDogNameError(true);
-    }
-    if (dogData.image === "") {
-      setDogImageError(true);
     }
     if (dogData.breed === "") {
       setBreedError(true);
@@ -63,30 +49,16 @@ export default function AddDog(props) {
     }
   };
 
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
-    previewFile(file);
-    setSelectedFile(file);
-    setFileInputState(e.target.value);
-  };
-
-  const previewFile = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setPreviewSource(reader.result);
-    };
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(dogData);
     checkFormErrors();
     if (
       dogData.name &&
       dogData.image &&
       dogData.breed &&
       dogData.sex &&
-      dogData.sex &&
+      dogData.yob &&
       dogData.description
     ) {
       setButtonState(true);
@@ -108,13 +80,56 @@ export default function AddDog(props) {
         }
       };
       createDog();
+    } else {
+      console.log("Add dog failed");
     }
+  };
+
+  const uploadImage = (e) => {
+    const fetchImageURL = async () => {
+      const files = e.target.files;
+      const data = new FormData();
+      data.append("file", files[0]);
+      data.append("upload_preset", "dogtinder");
+      setLoading(true);
+
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+
+      const file = await res.json();
+      console.log(file.secure_url);
+
+      setUploadedImage(file.secure_url);
+      setDogData({ ...dogData, image: file.secure_url });
+      setLoading(false);
+    };
+    fetchImageURL();
   };
 
   return (
     <Container>
       <h2>Add your dog</h2>
       <form className={classes.form} onSubmit={handleSubmit}>
+        <input
+          type="file"
+          name="file"
+          placeholder="Upload an image"
+          onChange={uploadImage}
+        />
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <img
+            src={uploadedImage}
+            style={{ height: "280px", width: "280px" }}
+            alt=""
+          />
+        )}
         <TextField
           onChange={(e) => setDogData({ ...dogData, name: e.target.value })}
           label="Name of Doggo"
@@ -123,26 +138,14 @@ export default function AddDog(props) {
           fullWidth
           className={classes.field}
         />
-        <br />
-        {/* <input
-          id="fileInput"
-          type="file"
-          name="image"
-          onChange={handleFileInputChange}
-          value={fileInputState}
-          className="form-input"
-        />
-        {previewSource && (
-          <img src={previewSource} alt="chosen" style={{ height: "280px", width: "280px" }} />
-        )} */}
-        <TextField
+        {/* <TextField
           onChange={(e) => setDogData({ ...dogData, image: e.target.value })}
           label="Image"
           className={classes.field}
           variant="outlined"
           error={dogImageError}
           fullWidth
-        />
+        /> */}
         <TextField
           onChange={(e) => setDogData({ ...dogData, breed: e.target.value })}
           label="Breed"
