@@ -16,19 +16,58 @@ const useStyles = makeStyles({
 export default function UpdateProfile(props) {
   const classes = useStyles();
   const [updateUser, setUpdateUser] = useState();
+  const [buttonState, setButtonState] = useState(false);
+
+  const [fullNameError, setfullNameError] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [locationError, setLocationError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+
+  const checkFormErrors = () => {
+    setfullNameError(false);
+    setImageError(false);
+    setLocationError(false);
+    setDescriptionError(false);
+    if (updateUser.fullName === "") {
+      setfullNameError(true);
+    }
+    if (updateUser.image === "") {
+      setImageError(true);
+    }
+    if (updateUser.location === "") {
+      setLocationError(true);
+    }
+    if (updateUser.description === "") {
+      setDescriptionError(true);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.updateProfile();
+    checkFormErrors();
     if (updateUser.image && updateUser.location && updateUser.description) {
-      console.log(JSON.stringify(updateUser));
-      fetch("http://localhost:3003/users/" + props.userId, {
-        method: "PUT",
-        body: JSON.stringify(updateUser),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.json());
+      setButtonState(true);
+      const createNewAccount = async () => {
+        try {
+          const res = await fetch(
+            "http://localhost:3003/users/" + props.userId,
+            {
+              method: "PUT",
+              body: JSON.stringify(updateUser),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await res.json();
+          props.updateProfile();
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+          setButtonState(false);
+        }
+      };
+      createNewAccount();
     }
   };
 
@@ -48,7 +87,7 @@ export default function UpdateProfile(props) {
           className={classes.field}
           label="Full Name"
           variant="outlined"
-          error={false}
+          error={fullNameError}
           fullWidth
         />{" "}
         <br />
@@ -60,7 +99,7 @@ export default function UpdateProfile(props) {
           label="Image"
           variant="outlined"
           fullWidth
-          error={false}
+          error={imageError}
         />
         <br />
         <TextField
@@ -71,7 +110,7 @@ export default function UpdateProfile(props) {
           label="Location"
           variant="outlined"
           fullWidth
-          error={false}
+          error={locationError}
         />
         <br />
         <TextField
@@ -84,7 +123,7 @@ export default function UpdateProfile(props) {
           fullWidth
           multiline
           rows={3}
-          error={false}
+          error={descriptionError}
         />
         <Button
           type="submit"
@@ -92,6 +131,7 @@ export default function UpdateProfile(props) {
           color="secondary"
           variant="contained"
           size="large"
+          disabled={buttonState}
         >
           Update profile
         </Button>
