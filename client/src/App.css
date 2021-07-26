@@ -1,6 +1,9 @@
 .App {
   text-align: center;
 }
+img {
+  border-radius: 5px;
+}
 
 .App-logo {
   height: 40vmin;

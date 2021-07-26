@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ShowDog(props) {
   const classes = useStyles();
   return (
-    <div>
+    <div className={classes.root}>
       <Paper elevation={3}>
         <Grid className={classes.grid} container spacing={3}>
           <Grid item xs={12} sm={6} md={6}>

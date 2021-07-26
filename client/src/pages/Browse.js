@@ -11,13 +11,9 @@ const useStyles = makeStyles((theme) => ({
   fab: {
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(1),
+    marginTop: theme.spacing(2),
     background: "white",
     elevation: 1,
-  },
-  buttons: {
-    marginTop: theme.spacing(2),
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
   },
 }));
 
