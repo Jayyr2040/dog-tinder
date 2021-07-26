@@ -27,6 +27,41 @@ export default function AddDog(props) {
     description: "",
     owner: props.userId,
   });
+  const [buttonState, setButtonState] = useState(false);
+
+  const [dogNameError, setDogNameError] = useState(false);
+  const [dogImageError, setDogImageError] = useState(false);
+  const [breedError, setBreedError] = useState(false);
+  const [sexError, setSexError] = useState(false);
+  const [yobError, setYobError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+
+  const checkFormErrors = () => {
+    setDogNameError(false);
+    setDogImageError(false);
+    setBreedError(false);
+    setSexError(false);
+    setYobError(false);
+    setDescriptionError(false);
+    if (dogData.name === "") {
+      setDogNameError(true);
+    }
+    if (dogData.image === "") {
+      setDogImageError(true);
+    }
+    if (dogData.breed === "") {
+      setBreedError(true);
+    }
+    if (dogData.sex === "") {
+      setBreedError(true);
+    }
+    if (dogData.yob === 0) {
+      setBreedError(true);
+    }
+    if (dogData.description === "") {
+      setDescriptionError(true);
+    }
+  };
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -45,19 +80,32 @@ export default function AddDog(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (true) {
-      console.log(JSON.stringify(dogData));
+    checkFormErrors();
+    if (
+      dogData.name &&
+      dogData.image &&
+      dogData.breed &&
+      dogData.sex &&
+      dogData.sex &&
+      dogData.description
+    ) {
+      setButtonState(true);
       const createDog = async () => {
-        const res = await fetch("http://localhost:3003/dogs/", {
-          method: "POST",
-          body: JSON.stringify(dogData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        console.log(data);
-        props.addDog(data);
+        try {
+          const res = await fetch("http://localhost:3003/dogs/", {
+            method: "POST",
+            body: JSON.stringify(dogData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await res.json();
+          console.log(data);
+          props.addDog(data);
+        } catch (error) {
+          console.log(error);
+          setButtonState(false);
+        }
       };
       createDog();
     }
@@ -71,7 +119,7 @@ export default function AddDog(props) {
           onChange={(e) => setDogData({ ...dogData, name: e.target.value })}
           label="Name of Doggo"
           variant="outlined"
-          error={false}
+          error={dogNameError}
           fullWidth
           className={classes.field}
         />
@@ -92,14 +140,14 @@ export default function AddDog(props) {
           label="Image"
           className={classes.field}
           variant="outlined"
-          error={false}
+          error={dogImageError}
           fullWidth
         /> */}
         <TextField
           onChange={(e) => setDogData({ ...dogData, breed: e.target.value })}
           label="Breed"
           variant="outlined"
-          error={false}
+          error={breedError}
           className={classes.field}
           fullWidth
         />
@@ -107,7 +155,7 @@ export default function AddDog(props) {
           onChange={(e) => setDogData({ ...dogData, sex: e.target.value })}
           label="Sex"
           variant="outlined"
-          error={false}
+          error={sexError}
           className={classes.field}
           fullWidth
         />
@@ -115,7 +163,7 @@ export default function AddDog(props) {
           onChange={(e) => setDogData({ ...dogData, yob: e.target.value })}
           label="Year of Birth"
           variant="outlined"
-          error={false}
+          error={yobError}
           className={classes.field}
           type="number"
           fullWidth
@@ -130,7 +178,7 @@ export default function AddDog(props) {
           multiline
           rows={3}
           className={classes.field}
-          error={false}
+          error={descriptionError}
         />
         <Button
           type="submit"
@@ -138,6 +186,7 @@ export default function AddDog(props) {
           variant="contained"
           size="large"
           className={classes.field}
+          disabled={buttonState}
         >
           Add dog
         </Button>
