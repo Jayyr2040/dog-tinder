@@ -1,14 +1,14 @@
 import { useState } from "react";
 import CreateAccount from "../components/register/CreateAccount";
-import UpdateProfile from "./components/register/UpdateProfile";
-import AddDog from "./components/register/AddDog";
+import UpdateProfile from "../components/register/UpdateProfile";
+import AddDog from "../components/register/AddDog";
 import "../App.css";
 
 function Register() {
   const [userId, setUserId] = useState();
   const [showCreateAccount, setCreateAccount] = useState(true);
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
-  const [showAddDog, setshowAddDog] = useState(false);
+  const [showAddDog, setShowAddDog] = useState(false);
 
   const registerNewUser = (data) => {
     setUserId(data._id);
@@ -19,8 +19,13 @@ function Register() {
 
   const updateProfile = () => {
     setShowUpdateProfile(false);
-    setshowAddDog(true);
+    setShowAddDog(true);
     console.log("user", userId, "updated");
+  };
+
+  const addDog = (dogData) => {
+    setShowAddDog(false);
+    console.log("dog", dogData.name, "created");
   };
 
   return (
@@ -35,7 +40,7 @@ function Register() {
       ) : (
         ""
       )}
-      {showAddDog ? <AddDog userId={userId} /> : ""}
+      {showAddDog ? <AddDog addDog={addDog} userId={userId} /> : ""}
     </div>
   );
 }

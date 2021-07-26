@@ -39,6 +39,7 @@ export default function AddDog(props) {
         });
         const data = await res.json();
         console.log(data);
+        props.addDog(data);
       };
       createDog();
     }
@@ -91,7 +92,9 @@ export default function AddDog(props) {
           fullWidth
         />
         <TextField
-          onChange={(e) => setDogData({ ...dogData, yob: e.target.value })}
+          onChange={(e) =>
+            setDogData({ ...dogData, description: e.target.value })
+          }
           label="Description"
           variant="outlined"
           fullWidth
