@@ -6,7 +6,11 @@ import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core/";
 import { Paper } from "@material-ui/core/";
 import { Typography } from "@material-ui/core/";
+import Checkbox from "@material-ui/core/Checkbox";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -19,10 +23,24 @@ const useStyles = makeStyles((theme) => ({
   field: {
     marginTop: 10,
   },
+  root: {
+    display: 'flex',
+  },
+  formControl: {
+    margin: theme.spacing(3),
+  },
 }));
 
 export default function UpdateProfile(props) {
   const classes = useStyles();
+  const [location, setLocation] = useState({
+    north: true,
+    south: true,
+    east: false,
+    west: false,
+    central: false,
+  });
+  const { north, south, east, west, central } = location;
   const [updateUser, setUpdateUser] = useState();
   const [buttonState, setButtonState] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(
@@ -103,6 +121,10 @@ export default function UpdateProfile(props) {
     fetchImageURL();
   };
 
+  const handleLocationChange = (event) => {
+    setLocation({ ...location, [event.target.name]: event.target.checked });
+  };
+
   return (
     <Container>
       <Grid
@@ -155,7 +177,7 @@ export default function UpdateProfile(props) {
                 error={fullNameError}
                 fullWidth
               />{" "}
-              <br />
+              {/* <br />
               <TextField
                 onChange={(e) =>
                   setUpdateUser({ ...updateUser, location: e.target.value })
@@ -165,7 +187,7 @@ export default function UpdateProfile(props) {
                 variant="outlined"
                 fullWidth
                 error={locationError}
-              />
+              /> */}
               <br />
               <TextField
                 onChange={(e) =>
@@ -179,6 +201,64 @@ export default function UpdateProfile(props) {
                 rows={3}
                 error={descriptionError}
               />
+              <div className={classes.root}>
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Location</FormLabel>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={north}
+                        onChange={handleLocationChange}
+                        name="North"
+                      />
+                    }
+                    label="North"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={south}
+                        onChange={handleLocationChange}
+                        name="South"
+                      />
+                    }
+                    label="South"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={east}
+                        onChange={handleLocationChange}
+                        name="East"
+                      />
+                    }
+                    label="East"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={west}
+                        onChange={handleLocationChange}
+                        name="West"
+                      />
+                    }
+                    label="West"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={central}
+                        onChange={handleLocationChange}
+                        name="Central"
+                      />
+                    }
+                    label="Central"
+                  />
+                </FormControl>
+              </div>
               <Button
                 type="submit"
                 className={classes.field}
