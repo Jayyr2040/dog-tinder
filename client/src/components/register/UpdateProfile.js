@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const INITIAL_FORM_STATE = {
-  image: "",
+  // image: "",
   fullName: "",
   description: "",
   location: [],
@@ -112,15 +112,15 @@ export default function UpdateProfile(props) {
                 }}
                 validationSchema={FORM_VALIDATION}
                 onSubmit={handleSubmit}
-                onSubmit={(data, { setSubmitting }) => {
-                  setSubmitting(true);
-                  console.log("submit: ", data);
-                  setSubmitting(false);
-                }}
+              //   onSubmit={(data, { setSubmitting }) => {
+              //     setSubmitting(true);
+              //     console.log("submit: ", data);
+              //     setSubmitting(false);
+              //   }}
               >
-                {({ values, errors }) => (
+             {/* {({ values, errors }) => ( */}
                   <Form>
-                    {loading ? (
+                    {/* {loading ? (
                     <CircularProgress />
                   ) : (
                     <img
@@ -134,7 +134,7 @@ export default function UpdateProfile(props) {
                     name="file"
                     placeholder="Upload an image"
                     onChange={uploadImage}
-                  />
+                  /> */}
                     <Textfield
                       name="fullName"
                       label="Full Name"
@@ -200,10 +200,10 @@ export default function UpdateProfile(props) {
                       </label>
                     </div>
                     <Button>Submit Form</Button>
-                    <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
                   </Form>
-                )}
+                {/* )} */}
               </Formik>
             </div>
           </Paper>
