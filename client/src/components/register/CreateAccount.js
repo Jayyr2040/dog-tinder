@@ -4,15 +4,22 @@ import { makeStyles } from "@material-ui/core";
 import { useState } from "react";
 import { Button } from "@material-ui/core";
 import { Container } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(1),
+    padding: 40,
+  },
   form: {
     marginTop: 20,
   },
   field: {
     marginTop: 10,
   },
-});
+}));
 
 export default function CreateAccount(props) {
   const classes = useStyles();
@@ -75,62 +82,82 @@ export default function CreateAccount(props) {
   };
   return (
     <Container>
-      <h2>Sign up for account</h2>
-      <form
-        className={classes.form}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
+      <Grid
+        container
+        spacing={4}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
       >
-        <TextField
-          onChange={(e) => setSignUp({ ...signUp, email: e.target.value })}
-          className={classes.field}
-          label="Email"
-          variant="outlined"
-          error={emailError}
-          fullWidth
-        />
-        <br />
-        <TextField
-          onChange={(e) => setSignUp({ ...signUp, fullName: e.target.value })}
-          className={classes.field}
-          label="Full Name"
-          variant="outlined"
-          error={fullNameError}
-          fullWidth
-        />
-        <br />
-        <TextField
-          onChange={(e) => setSignUp({ ...signUp, username: e.target.value })}
-          className={classes.field}
-          label="Username"
-          variant="outlined"
-          error={usernameError}
-          fullWidth
-        />
-        <br />
-        <TextField
-          onChange={(e) => setSignUp({ ...signUp, password: e.target.value })}
-          className={classes.field}
-          label="Password"
-          variant="outlined"
-          type="password"
-          error={passwordError}
-          fullWidth
-        />
-        <br />
-        <br />
-        <Button
-          type="submit"
-          className={classes.field}
-          color="secondary"
-          variant="contained"
-          size="large"
-          disabled={buttonState}
-        >
-          Sign up
-        </Button>
-      </form>
+        <Grid item xs={12} md={4} lg={4}>
+          <Paper elevation={5} className={classes.paper}>
+          <Typography variant="h5">Sign up for account</Typography>
+            <form
+              className={classes.form}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmit}
+            >
+              <TextField
+                onChange={(e) =>
+                  setSignUp({ ...signUp, email: e.target.value })
+                }
+                className={classes.field}
+                label="Email"
+                variant="outlined"
+                error={emailError}
+                fullWidth
+              />
+              <br />
+              <TextField
+                onChange={(e) =>
+                  setSignUp({ ...signUp, fullName: e.target.value })
+                }
+                className={classes.field}
+                label="Full Name"
+                variant="outlined"
+                error={fullNameError}
+                fullWidth
+              />
+              <br />
+              <TextField
+                onChange={(e) =>
+                  setSignUp({ ...signUp, username: e.target.value })
+                }
+                className={classes.field}
+                label="Username"
+                variant="outlined"
+                error={usernameError}
+                fullWidth
+              />
+              <br />
+              <TextField
+                onChange={(e) =>
+                  setSignUp({ ...signUp, password: e.target.value })
+                }
+                className={classes.field}
+                label="Password"
+                variant="outlined"
+                type="password"
+                error={passwordError}
+                fullWidth
+              />
+              <br />
+              <br />
+              <Button
+                type="submit"
+                className={classes.field}
+                color="secondary"
+                variant="contained"
+                size="large"
+                disabled={buttonState}
+              >
+                Sign up
+              </Button>
+            </form>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
