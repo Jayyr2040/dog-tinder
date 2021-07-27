@@ -8,9 +8,7 @@ import { Paper } from "@material-ui/core/";
 import { Typography } from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,42 +22,33 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
   },
   root: {
-    display: 'flex',
+    display: "flex",
   },
   formControl: {
     margin: theme.spacing(3),
   },
 }));
 
+let chosenLocations = [];
+
 export default function UpdateProfile(props) {
   const classes = useStyles();
-  const [location, setLocation] = useState({
-    north: true,
-    south: true,
-    east: false,
-    west: false,
-    central: false,
+  const [updateUser, setUpdateUser] = useState({
+    location: chosenLocations,
   });
-  const { north, south, east, west, central } = location;
-  const [updateUser, setUpdateUser] = useState();
   const [buttonState, setButtonState] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(
     "https://image.flaticon.com/icons/png/512/848/848043.png"
   );
   const [loading, setLoading] = useState(false);
   const [fullNameError, setfullNameError] = useState(false);
-  const [locationError, setLocationError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
 
   const checkFormErrors = () => {
     setfullNameError(false);
-    setLocationError(false);
     setDescriptionError(false);
     if (updateUser.fullName === "") {
       setfullNameError(true);
-    }
-    if (updateUser.location === "") {
-      setLocationError(true);
     }
     if (updateUser.description === "") {
       setDescriptionError(true);
@@ -68,8 +57,15 @@ export default function UpdateProfile(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    for (const location of locations) {
+      if (e.target.elements[location].checked) {
+        chosenLocations = [...chosenLocations, location];
+      }
+      setUpdateUser({ ...updateUser, location: chosenLocations });
+    }
+    console.log(chosenLocations);
     checkFormErrors();
-    if (updateUser.image && updateUser.location && updateUser.description) {
+    if (updateUser.description) {
       setButtonState(true);
       const createNewAccount = async () => {
         try {
@@ -121,9 +117,15 @@ export default function UpdateProfile(props) {
     fetchImageURL();
   };
 
-  const handleLocationChange = (event) => {
-    setLocation({ ...location, [event.target.name]: event.target.checked });
-  };
+  const locations = ["North", "South", "East", "West", "Central"];
+  const checkboxes = locations.map((location) => (
+    <FormControlLabel
+      name={location}
+      value={location}
+      control={<Checkbox />}
+      label={location}
+    />
+  ));
 
   return (
     <Container>
@@ -167,6 +169,10 @@ export default function UpdateProfile(props) {
                   hidden
                 />
               </Button>
+              <Typography variant="body1" color="textSecondary" align="left" >
+                Preferred Locations:
+              </Typography>
+              {checkboxes}
               <TextField
                 onChange={(e) =>
                   setUpdateUser({ ...updateUser, fullName: e.target.value })
@@ -176,18 +182,7 @@ export default function UpdateProfile(props) {
                 variant="outlined"
                 error={fullNameError}
                 fullWidth
-              />{" "}
-              {/* <br />
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, location: e.target.value })
-                } // destructure -> array setUpdateUser({ ...updateUser, location: ["North"]})
-                className={classes.field}
-                label="Location"
-                variant="outlined"
-                fullWidth
-                error={locationError}
-              /> */}
+              />
               <br />
               <TextField
                 onChange={(e) =>
@@ -201,64 +196,6 @@ export default function UpdateProfile(props) {
                 rows={3}
                 error={descriptionError}
               />
-              <div className={classes.root}>
-                <FormControl
-                  component="fieldset"
-                  className={classes.formControl}
-                >
-                  <FormLabel component="legend">Location</FormLabel>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={north}
-                        onChange={handleLocationChange}
-                        name="North"
-                      />
-                    }
-                    label="North"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={south}
-                        onChange={handleLocationChange}
-                        name="South"
-                      />
-                    }
-                    label="South"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={east}
-                        onChange={handleLocationChange}
-                        name="East"
-                      />
-                    }
-                    label="East"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={west}
-                        onChange={handleLocationChange}
-                        name="West"
-                      />
-                    }
-                    label="West"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={central}
-                        onChange={handleLocationChange}
-                        name="Central"
-                      />
-                    }
-                    label="Central"
-                  />
-                </FormControl>
-              </div>
               <Button
                 type="submit"
                 className={classes.field}
