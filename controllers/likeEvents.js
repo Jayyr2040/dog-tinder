@@ -32,4 +32,32 @@ router.delete("/:id", (req, res) => {
   });
 });
 
+
+// Matching likeEvent (not tested yet with sessions)
+router.get("/:dogId", (req, res) => {
+
+  // console.log("req.session.currentUser: " );
+  // console.log( req.session.currentUser );
+
+  const ownerId = "60fe823434ff591296b78d16";
+
+  Dog.findOne(          
+    {owner: ownerId},   // Identify who is owner
+    (error, foundDog) => {
+
+      const OWNER_DOG = (foundDog._id).toString() // Find the owner's dog id   
+      const DOG_THAT_OWNER_LIKE = req.params.dogId;
+
+      // find mutual like/ match
+      LikeEvent.findOne( { $and: [ { liker: DOG_THAT_OWNER_LIKE }, { likee: OWNER_DOG} ] } , (err, foundMatch ) => {
+        console.log("Found Match: ");
+        console.log(foundMatch);
+      });
+
+    });
+});
+
+
+
+
 module.exports = router;

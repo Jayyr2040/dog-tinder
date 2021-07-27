@@ -52,11 +52,13 @@ const dogsController = require("./controllers/dogs");
 const likeEventsController = require("./controllers/likeEvents");
 const browseController = require("./controllers/browse");
 const sessionsController = require("./controllers/sessions.js");
+const likeEventsMatchController = require("./controllers/likeEventsMatch.js");
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
-app.use("/sessions", sessionsController)
+app.use("/sessions", sessionsController);
+app.use("/likematch", likeEventsMatchController);
 
 app.listen(PORT, () => {
   console.log("Dog matching 🐶 happening on port", PORT);
