@@ -27,31 +27,22 @@ export default function ShowDog(props) {
       <Paper elevation={3}>
         <Grid className={classes.grid} container spacing={3}>
           <Grid item xs={12} sm={6} md={6}>
-            <img src={props.currentDog.image} alt="dog" />
+            <img src={props.currentDog?.image} alt="dog" />
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="flex-end"
-              alignItems="flex-end"
-            >
-              <Grid item md={12}>
-                <Typography variant="h5" style={{ fontWeight: 700 }}>
-                  {props.currentDog.name},{" "}
-                  {new Date().getFullYear() - props.currentDog.yob}
-                </Typography>
-                <Typography variant="subtitle2" style={{ fontWeight: 700 }}>
-                  {props.currentDog.breed}{" "}
-                  {props.currentDog.sex === "F" ? "♀" : "♂"}
-                </Typography>
-                <br />
-                <Typography variant="body2">
-                  {props.currentDog.description}
-                </Typography>
-                <p />
-              </Grid>
-            </Grid>
+            <Typography variant="h5" style={{ fontWeight: 700 }}>
+              {props.currentDog?.name},{" "}
+              {new Date().getFullYear() - props.currentDog?.yob}
+            </Typography>
+            <Typography variant="subtitle2" style={{ fontWeight: 700 }}>
+              {props.currentDog?.breed}{" "}
+              {props.currentDog?.sex === "F" ? "♀" : "♂"}
+            </Typography>
+            <br />
+            <Typography variant="body2">
+              {props.currentDog?.description}
+            </Typography>
+            <p />
           </Grid>
         </Grid>
       </Paper>
