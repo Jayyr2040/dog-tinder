@@ -1,14 +1,12 @@
-import { useState } from "react";
 import NewSessions from "../components/NewSessions";
 import "../App.css";
 
-function Login() {
-
-  const [currentData,setCurrentData] = useState();
-
+function Login(props) {
   return (
     <div className="App">
-        <NewSessions setCurrentData={setCurrentData} currentData={currentData}/>
+      <NewSessions
+        loggedInUserData={(userData) => props.loggedInUserData(userData)}
+      />
     </div>
   );
 }

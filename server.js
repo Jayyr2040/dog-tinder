@@ -39,7 +39,13 @@ mongoose.connection.once("open", () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
-app.use(session({secret: process.env.SECRET, resave: false, saveUninitialized: false,}));
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 //====================
 // Config - Controller
@@ -56,7 +62,7 @@ app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
-app.use("/sessions", sessionsController)
+app.use("/sessions", sessionsController);
 
 app.listen(PORT, () => {
   console.log("Dog matching 🐶 happening on port", PORT);

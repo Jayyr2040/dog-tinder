@@ -16,48 +16,41 @@ const useStyles = makeStyles({
 
 export default function NewSessions(props) {
   const classes = useStyles();
-  const [signUp, setSignUp] = useState({
+  const [signIn, setSignIn] = useState({
     username: "",
     password: "",
   });
 
-
-  
   const handleSubmit = (e) => {
     e.preventDefault();
-   
-    //  console.log(JSON.stringify(signUp));
-      const createNewLogin = async () => {
-        const res = await fetch("/sessions", {
-          method: "POST",
-          body: JSON.stringify(signUp),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        console.log("user", data.currentUser);
-        console.log("dog", data.dog._id);
-        props.setCurrentData(data.dog._id);
-      };
-      createNewLogin();
-    
+    console.log(JSON.stringify(signIn));
+    const createNewLogin = async () => {
+      const res = await fetch("/sessions", {
+        method: "POST",
+        body: JSON.stringify(signIn),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log("user", data.currentUser);
+      props.loggedInUserData(data.currentUser);
+    };
+    createNewLogin();
   };
 
-const handleDelete = (e) => {
+  const handleDelete = (e) => {
     e.preventDefault();
-   
     //  console.log(JSON.stringify(signUp));
-      const deleteLogin = async () => {
-        const res = await fetch("/sessions", {
-          method: "DELETE",
-        });
-        const data = await res.json();
-      };
-      deleteLogin();
-    
+    const deleteLogin = async () => {
+      const res = await fetch("/sessions", {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log("session deleted", data);
+    };
+    deleteLogin();
   };
-
 
   return (
     <Container>
@@ -69,7 +62,7 @@ const handleDelete = (e) => {
         onSubmit={handleSubmit}
       >
         <TextField
-          onChange={(e) => setSignUp({ ...signUp, username: e.target.value })}
+          onChange={(e) => setSignIn({ ...signIn, username: e.target.value })}
           className={classes.field}
           label="username"
           variant="outlined"
@@ -77,7 +70,7 @@ const handleDelete = (e) => {
         />
         <br />
         <TextField
-          onChange={(e) => setSignUp({ ...signUp, password: e.target.value })}
+          onChange={(e) => setSignIn({ ...signIn, password: e.target.value })}
           className={classes.field}
           label="password"
           variant="outlined"
@@ -95,16 +88,15 @@ const handleDelete = (e) => {
         </Button>
       </form>
       <Button
-          type="submit"
-          className={classes.field}
-          color="secondary"
-          variant="contained"
-          size="large"
-          onClick={handleDelete}
-        >
-          Login Out
-        </Button>
-       {props.currentData}
+        type="submit"
+        className={classes.field}
+        color="secondary"
+        variant="contained"
+        size="large"
+        onClick={handleDelete}
+      >
+        Login Out
+      </Button>
     </Container>
   );
 }
