@@ -39,19 +39,6 @@ export default function NewSessions(props) {
     createNewLogin();
   };
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-    //  console.log(JSON.stringify(signUp));
-    const deleteLogin = async () => {
-      const res = await fetch("/sessions", {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      console.log("session deleted", data);
-    };
-    deleteLogin();
-  };
-
   return (
     <Container>
       <h2>Login for account</h2>
@@ -87,16 +74,6 @@ export default function NewSessions(props) {
           Login
         </Button>
       </form>
-      <Button
-        type="submit"
-        className={classes.field}
-        color="secondary"
-        variant="contained"
-        size="large"
-        onClick={handleDelete}
-      >
-        Login Out
-      </Button>
     </Container>
   );
 }
