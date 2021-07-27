@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Browse from "./pages/Browse";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { Link } from "@material-ui/core";
+import Matches from "./pages/Matches";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -41,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  logo: {
+    marginRight: 30,
+  },
+  avatar: {
+    marginLeft: 10,
+  },
 }));
 
 function App() {
@@ -48,7 +55,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState();
   const [loggedInStatus, setLoggedInStatus] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl); // from material-ui docs, I've no idea what this is doing
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -83,36 +90,36 @@ function App() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogOut = () => {
+    setAnchorEl(null);
+    //  console.log(JSON.stringify(signUp));
+    const deleteLogin = async () => {
+      const res = await fetch("/sessions", {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log("session deleted", data);
+    };
+    deleteLogin();
+    window.location.reload();
+  };
 
   return (
     <div className={classes.toolbar}>
       <ThemeProvider theme={theme}>
         <AppBar color="inherit">
           <Toolbar>
-            <Typography className={classes.links} style={{ fontWeight: 700 }}>
-              Dog Tinder
+            <Typography className={classes.logo} style={{ fontWeight: 700 }}>
+              <Link
+                component={RouterLink}
+                color="inherit"
+                to="/"
+                style={{ textDecoration: "none" }}
+              >
+                Dog Tinder
+              </Link>
             </Typography>
             <Typography className={classes.links}>
-              <Link
-                component={RouterLink}
-                color="inherit"
-                to="/register"
-                style={{ textDecoration: "none" }}
-              >
-                Register
-              </Link>
-            </Typography>
-            {/* <Typography className={classes.links}>
-              <Link
-                component={RouterLink}
-                color="inherit"
-                to="/login"
-                style={{ textDecoration: "none" }}
-              >
-                Login
-              </Link>
-            </Typography> */}
-            <Typography className={classes.title}>
               <Link
                 component={RouterLink}
                 color="inherit"
@@ -122,10 +129,20 @@ function App() {
                 Browse
               </Link>
             </Typography>
+            <Typography className={classes.title}>
+              <Link
+                component={RouterLink}
+                color="inherit"
+                to="/matches"
+                style={{ textDecoration: "none" }}
+              >
+                Matches
+              </Link>
+            </Typography>
             <Typography>
               Howdy, {currentUser?.fullName ? currentUser?.fullName : "User"}
             </Typography>
-            <div>
+            <div className={classes.avatar}>
               <IconButton
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
@@ -153,15 +170,23 @@ function App() {
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>Edit Profile</MenuItem>
                 <MenuItem onClick={handleClose}>Account Settings</MenuItem>
-                <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
               </Menu>
             </div>
           </Toolbar>
         </AppBar>
 
         <Switch>
+          <Route exact path="/">
+            {loggedInStatus ? (
+              <Redirect to="/browse" />
+            ) : (
+              <Redirect to="/login" />
+            )}
+          </Route>
           <Route path="/register">
             <Register />
+            {loggedInStatus && <Redirect to="/browse" />}
           </Route>
           <Route path="/login">
             <Login loggedInUserData={loggedInUserData} />
@@ -169,6 +194,9 @@ function App() {
           </Route>
           <Route path="/browse">
             {loggedInStatus ? <Browse /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/matches">
+            {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
           </Route>
           <Redirect to="/" />
         </Switch>
