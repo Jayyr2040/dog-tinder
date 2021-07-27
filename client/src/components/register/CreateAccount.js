@@ -1,8 +1,5 @@
 import React from "react";
-// import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core";
-import { useState } from "react";
-// import { Button } from "@material-ui/core";
 import { Container } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
@@ -11,19 +8,6 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import Textfield from "./FormsUI/Textfield";
 import Button from "./FormsUI/Button";
-
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     margin: theme.spacing(1),
-//     padding: 40,
-//   },
-//   form: {
-//     marginTop: 20,
-//   },
-//   field: {
-//     marginTop: 10,
-//   },
-// }));
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
