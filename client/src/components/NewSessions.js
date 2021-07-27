@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core";
 import { useState } from "react";
 import { Button } from "@material-ui/core";
 import { Container } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles({
   form: {
@@ -11,6 +13,13 @@ const useStyles = makeStyles({
   },
   field: {
     marginTop: 10,
+  },
+  logo: {
+    alignItems: "center",
+    justify: "center",
+  },
+  footer: {
+    marginTop: 40,
   },
 });
 
@@ -41,7 +50,9 @@ export default function NewSessions(props) {
 
   return (
     <Container>
-      <h2>Login for account</h2>
+      <Grid container justify="center">
+        <img src="https://i.ibb.co/KjSLSwS/logo.png" height="60" alt="logo" />
+      </Grid>
       <form
         className={classes.form}
         noValidate
@@ -51,7 +62,7 @@ export default function NewSessions(props) {
         <TextField
           onChange={(e) => setSignIn({ ...signIn, username: e.target.value })}
           className={classes.field}
-          label="username"
+          label="Username"
           variant="outlined"
           fullWidth
         />
@@ -59,21 +70,26 @@ export default function NewSessions(props) {
         <TextField
           onChange={(e) => setSignIn({ ...signIn, password: e.target.value })}
           className={classes.field}
-          label="password"
+          label="Password"
+          type="password"
           variant="outlined"
           fullWidth
         />
         <br />
         <Button
           type="submit"
-          className={classes.field}
+          className={classes.form}
           color="secondary"
           variant="contained"
           size="large"
+          fullWidth
         >
-          Login
+          <Typography style={{ fontWeight: 700 }}>Log in</Typography>
         </Button>
       </form>
+      <Typography className={classes.footer} align="center" variant="subtitle2">
+        Forgot password?
+      </Typography>
     </Container>
   );
 }

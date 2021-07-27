@@ -7,15 +7,20 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import Matches from "./pages/Matches";
 import NavBar from "./components/home/NavBar";
 import { makeStyles } from "@material-ui/core/styles";
+import { Container } from "@material-ui/core";
+import "./App.css";
 
 const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#FF9B01",
     },
+    secondary: {
+      main: "#d4524d",
+    },
   },
   typography: {
-    fontFamily: "Open Sans",
+    fontFamily: "Poppins",
     fontWeightLight: 100,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
@@ -63,30 +68,32 @@ function App() {
     <div className={classes.toolbar}>
       <ThemeProvider theme={theme}>
         {loggedInStatus && <NavBar currentUser={currentUser} />}
-        <Switch>
-          <Route exact path="/">
-            {loggedInStatus ? (
-              <Redirect to="/browse" />
-            ) : (
-              <Redirect to="/login" />
-            )}
-          </Route>
-          <Route path="/register">
-            <Register />
-            {loggedInStatus && <Redirect to="/browse" />}
-          </Route>
-          <Route path="/login">
-            <Login loggedInUserData={loggedInUserData} />
-            {loggedInStatus && <Redirect to="/browse" />}
-          </Route>
-          <Route path="/browse">
-            {loggedInStatus ? <Browse /> : <Redirect to="/login" />}
-          </Route>
-          <Route path="/matches">
-            {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
-          </Route>
-          <Redirect to="/" />
-        </Switch>
+        <Container maxWidth="md">
+          <Switch>
+            <Route exact path="/">
+              {loggedInStatus ? (
+                <Redirect to="/browse" />
+              ) : (
+                <Redirect to="/login" />
+              )}
+            </Route>
+            <Route path="/register">
+              <Register />
+              {loggedInStatus && <Redirect to="/browse" />}
+            </Route>
+            <Route path="/login">
+              <Login loggedInUserData={loggedInUserData} />
+              {loggedInStatus && <Redirect to="/browse" />}
+            </Route>
+            <Route path="/browse">
+              {loggedInStatus ? <Browse /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/matches">
+              {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
+            </Route>
+            <Redirect to="/" />
+          </Switch>
+        </Container>
       </ThemeProvider>
     </div>
   );
