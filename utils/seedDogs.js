@@ -7,7 +7,7 @@ const seedDogs = [
     yob: 2016,
     description:
       "Kai Kai is bright and knows many basic commands and tricks. He loves water and enjoys taking baths. He will go to the toilet anywhere, indoors or out. He barely ever plays. He's quiet until he's hungry.",
-    owner: "60fe5b60f8a3ae014c30b39c",
+    owner: "60fe267fa3eca60015a40db4",
   },
   {
     name: "Luna",
@@ -17,7 +17,7 @@ const seedDogs = [
     yob: 2017,
     description:
       "Luna is smart and very crafty. She is not very clean. She isn't very playful. She barely makes a sound. But she will eat any food she is given, and many inedible things too. Her favourite dog food brand is a cheap dry variety.",
-    owner: "60fe5b60f8a3ae014c30b39e",
+    owner: "60fe267fa3eca60015a40db5",
   },
   {
     name: "Heroku",
@@ -27,7 +27,7 @@ const seedDogs = [
     yob: 2018,
     description:
       "Heroku LOVES to roll in mud. He is playful He likes to talk at people. He will eat any food he gets access to. His favourite dog food brand is a cheap canned variety.",
-    owner: "60fe5b60f8a3ae014c30b3a5",
+    owner: "60fe267fa3eca60015a40db6",
   },
   {
     name: "Mongo",
@@ -37,7 +37,7 @@ const seedDogs = [
     yob: 2015,
     description:
       "This docile dog is loving towards his owner, and will eventually come when called. He generally has a mild interest in strangers, and does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a0",
+    owner: "60fe267fa3eca60015a40db7",
   },
   {
     name: "Daisy",
@@ -47,7 +47,7 @@ const seedDogs = [
     yob: 2016,
     description:
       "This calm dog is indifferent toward her owner, but will sometimes come when called. She does not pay any attention to strangers (but will allow herself to be touched if you can get her), and she does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b39d",
+    owner: "60fe267fa3eca60015a40db8",
   },
   {
     name: "Vercel",
@@ -57,7 +57,7 @@ const seedDogs = [
     yob: 2016,
     description:
       "Vercel is quite smart and knows some basic commands. He is generally quite clean. He will always spin around 7 times before using the toilet. He is quite playful and can entertain himself for hours on end with random objects. He is usually very quiet.",
-    owner: "60fe5b60f8a3ae014c30b3a1",
+    owner: "60fe267fa3eca60015a40db9",
   },
   {
     name: "Lucy",
@@ -67,7 +67,7 @@ const seedDogs = [
     yob: 2017,
     description:
       "This lovable dog is indifferent toward his owner, and rarely comes when called. He always jumps up at any new person he meets, and does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a2",
+    owner: "60fe267fa3eca60015a40dba",
   },
   {
     name: "Jeanne",
@@ -77,7 +77,7 @@ const seedDogs = [
     yob: 2017,
     description:
       "This friendly dog is friendly toward her owner, and will always come when called. She is not afraid of strangers, and does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a6",
+    owner: "60fe267fa3eca60015a40dbb",
   },
   {
     name: "Waffle",
@@ -87,7 +87,7 @@ const seedDogs = [
     yob: 2016,
     description:
       "This gentle dog is extremely loving towards his owner, and will always come immediately when called. He absolutely loves meeting new people, and does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a3",
+    owner: "60fe267fa3eca60015a40dbc",
   },
   {
     name: "Max",
@@ -97,7 +97,7 @@ const seedDogs = [
     yob: 2018,
     description:
       "This calm dog is mean to his owner, but will sometimes come when called. He generally has a mild interest in strangers, and does not mind other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a7",
+    owner: "60fe267fa3eca60015a40dbd",
   },
   {
     name: "Marie",
@@ -107,7 +107,7 @@ const seedDogs = [
     yob: 2017,
     description:
       "This quiet dog is extremely loving towards her owner, and will always come immediately when called. She is distrustful of strangers, but will happily play with other animals.",
-    owner: "60fe5b60f8a3ae014c30b3a4",
+    owner: "60fe267fa3eca60015a40dbe",
   },
   {
     name: "Cali",
@@ -117,7 +117,7 @@ const seedDogs = [
     yob: 2019,
     description:
       "This sociable dog is indifferent toward her owner, and never comes when called. She absolutely loves meeting new people, and will happily play with other animals.",
-    owner: "60fe5b60f8a3ae014c30b39f",
+    owner: "60fe267fa3eca60015a40dbf",
   },
 ];
 
