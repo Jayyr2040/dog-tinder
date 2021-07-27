@@ -1,95 +1,51 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/";
-import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core/";
 import { Paper } from "@material-ui/core/";
 import { Typography } from "@material-ui/core/";
-import Checkbox from "@material-ui/core/Checkbox";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Textfield from "./FormsUI/Textfield";
+import Button from "./FormsUI/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const useStyles = makeStyles((theme) => ({
+  formWrapper: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(8),
+  },
   paper: {
     margin: theme.spacing(1),
     padding: 40,
   },
-  form: {
-    marginTop: 20,
-  },
   field: {
-    marginTop: 10,
-  },
-  root: {
-    display: "flex",
-  },
-  formControl: {
-    margin: theme.spacing(3),
+    marginBottom: 20,
   },
 }));
 
-let chosenLocations = [];
+const INITIAL_FORM_STATE = {
+  image: "",
+  fullName: "",
+  description: "",
+  location: [],
+};
+
+const FORM_VALIDATION = Yup.object().shape({
+  // image: Yup.string(),
+  fullName: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+  location: Yup.array(),
+});
 
 export default function UpdateProfile(props) {
   const classes = useStyles();
-  const [updateUser, setUpdateUser] = useState({
-    location: chosenLocations,
-  });
-  const [buttonState, setButtonState] = useState(false);
+  const [updateUser, setUpdateUser] = useState({});
   const [uploadedImage, setUploadedImage] = useState(
     "https://image.flaticon.com/icons/png/512/848/848043.png"
   );
   const [loading, setLoading] = useState(false);
-  const [fullNameError, setfullNameError] = useState(false);
-  const [descriptionError, setDescriptionError] = useState(false);
-
-  const checkFormErrors = () => {
-    setfullNameError(false);
-    setDescriptionError(false);
-    if (updateUser.fullName === "") {
-      setfullNameError(true);
-    }
-    if (updateUser.description === "") {
-      setDescriptionError(true);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    for (const location of locations) {
-      if (e.target.elements[location].checked) {
-        chosenLocations = [...chosenLocations, location];
-      }
-      setUpdateUser({ ...updateUser, location: chosenLocations });
-    }
-    console.log(chosenLocations);
-    checkFormErrors();
-    if (updateUser.description) {
-      setButtonState(true);
-      const createNewAccount = async () => {
-        try {
-          const res = await fetch(
-            "http://localhost:3003/users/" + props.userId,
-            {
-              method: "PUT",
-              body: JSON.stringify(updateUser),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const data = await res.json();
-          props.updateProfile();
-          console.log(data);
-        } catch (error) {
-          console.log(error);
-          setButtonState(false);
-        }
-      };
-      createNewAccount();
-    }
-  };
 
   const uploadImage = (e) => {
     const fetchImageURL = async () => {
@@ -117,15 +73,25 @@ export default function UpdateProfile(props) {
     fetchImageURL();
   };
 
-  const locations = ["North", "South", "East", "West", "Central"];
-  const checkboxes = locations.map((location) => (
-    <FormControlLabel
-      name={location}
-      value={location}
-      control={<Checkbox />}
-      label={location}
-    />
-  ));
+  const handleSubmit = (formValue) => {
+    const createNewAccount = async () => {
+      try {
+        const res = await fetch("http://localhost:3003/users/" + props.userId, {
+          method: "PUT",
+          body: JSON.stringify(formValue),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        props.updateProfile();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createNewAccount();
+  };
 
   return (
     <Container>
@@ -138,75 +104,108 @@ export default function UpdateProfile(props) {
       >
         <Grid item xs={12} md={4} lg={4}>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Update Account Details</Typography>
-            <form
-              className={classes.form}
-              noValidate
-              autoComplete="off"
-              onSubmit={handleSubmit}
-            >
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <img
-                  src={uploadedImage}
-                  style={{ height: "280px", width: "280px" }}
-                  alt=""
-                />
-              )}
-              <Button
-                variant="contained"
-                component="label"
-                color="secondary"
-                style={{ maxWidth: "180px", maxHeight: "25px" }}
+            <Typography variant="h5">Sign up for account</Typography>
+            <div className={classes.formWrapper}>
+              <Formik
+                initialValues={{
+                  ...INITIAL_FORM_STATE,
+                }}
+                validationSchema={FORM_VALIDATION}
+                onSubmit={handleSubmit}
+                onSubmit={(data, { setSubmitting }) => {
+                  setSubmitting(true);
+                  console.log("submit: ", data);
+                  setSubmitting(false);
+                }}
               >
-                Upload File
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload an image"
-                  onChange={uploadImage}
-                  hidden
-                />
-              </Button>
-              <Typography variant="body1" color="textSecondary" align="left" >
-                Preferred Locations:
-              </Typography>
-              {checkboxes}
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, fullName: e.target.value })
-                }
-                className={classes.field}
-                label="Full Name"
-                variant="outlined"
-                error={fullNameError}
-                fullWidth
-              />
-              <br />
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, description: e.target.value })
-                }
-                className={classes.field}
-                label="Description"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                error={descriptionError}
-              />
-              <Button
-                type="submit"
-                className={classes.field}
-                color="secondary"
-                variant="contained"
-                size="large"
-                disabled={buttonState}
-              >
-                Update profile
-              </Button>
-            </form>
+                {({ values, errors }) => (
+                  <Form>
+                    {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <img
+                      src={uploadedImage}
+                      style={{ height: "280px", width: "280px" }}
+                      alt=""
+                    />
+                  )}
+                  <input
+                    type="file"
+                    name="file"
+                    placeholder="Upload an image"
+                    onChange={uploadImage}
+                  />
+                    <Textfield
+                      name="fullName"
+                      label="Full Name"
+                      className={classes.field}
+                    />
+                    <Textfield
+                      name="description"
+                      label="Description"
+                      className={classes.field}
+                      multiline={true}
+                      rows={4}
+                    />
+                    <div>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="North"
+                          value="North"
+                          as={Checkbox}
+                        />
+                        North
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="South"
+                          value="South"
+                          as={Checkbox}
+                        />
+                        South
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="East"
+                          value="East"
+                          as={Checkbox}
+                        />
+                        East
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="West"
+                          value="West"
+                          as={Checkbox}
+                        />
+                        West
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="Central"
+                          value="Central"
+                          as={Checkbox}
+                        />
+                        Central
+                      </label>
+                    </div>
+                    <Button>Submit Form</Button>
+                    <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>{JSON.stringify(errors, null, 2)}</pre>
+                  </Form>
+                )}
+              </Formik>
+            </div>
           </Paper>
         </Grid>
       </Grid>
