@@ -1,9 +1,8 @@
 import NewSessions from "../components/NewSessions";
-import "../App.css";
 
 function Login(props) {
   return (
-    <div className="App">
+    <div>
       <NewSessions
         loggedInUserData={(userData) => props.loggedInUserData(userData)}
       />
