@@ -50,10 +50,12 @@ app.get("/", (req, res) => {
 const usersController = require("./controllers/users");
 const dogsController = require("./controllers/dogs");
 const likeEventsController = require("./controllers/likeEvents");
+const browseController = require("./controllers/browse");
 const sessionsController = require("./controllers/sessions.js");
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
+app.use("/browse", browseController);
 app.use("/sessions", sessionsController)
 
 app.listen(PORT, () => {

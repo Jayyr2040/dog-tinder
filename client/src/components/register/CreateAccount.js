@@ -22,6 +22,8 @@ export default function CreateAccount(props) {
     fullName: "",
     email: "",
   });
+  const [buttonState, setButtonState] = useState(false);
+
   const [emailError, setEmailError] = useState(false);
   const [fullNameError, setfullNameError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
@@ -30,6 +32,8 @@ export default function CreateAccount(props) {
   const checkFormErrors = () => {
     setEmailError(false);
     setfullNameError(false);
+    setUsernameError(false);
+    setPasswordError(false);
     if (signUp.email === "") {
       setEmailError(true);
     }
@@ -48,18 +52,23 @@ export default function CreateAccount(props) {
     e.preventDefault();
     checkFormErrors();
     if (signUp.email && signUp.fullName && signUp.username && signUp.password) {
-      console.log(JSON.stringify(signUp));
+      setButtonState(true);
       const createNewAccount = async () => {
-        const res = await fetch("http://localhost:3003/users", {
-          method: "POST",
-          body: JSON.stringify(signUp),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        props.registerNewUser(data);
-        console.log(data);
+        try {
+          const res = await fetch("http://localhost:3003/users", {
+            method: "POST",
+            body: JSON.stringify(signUp),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await res.json();
+          props.registerNewUser(data);
+          console.log(data);
+        } catch (error) {
+          setButtonState(false);
+          console.log(error);
+        }
       };
       createNewAccount();
     }
@@ -117,6 +126,7 @@ export default function CreateAccount(props) {
           color="secondary"
           variant="contained"
           size="large"
+          disabled={buttonState}
         >
           Sign up
         </Button>
