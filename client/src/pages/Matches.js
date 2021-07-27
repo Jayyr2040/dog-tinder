@@ -39,22 +39,65 @@ const tempDogData = [
 ];
 
 export default function Matches() {
-  //-> useEffect here to fetch matched dogs
   const [matchedList, setMatchedList] = useState(tempDogData);
+  const [selectedDogIndex, setSelectedDogIndex] = useState(-1);
+  // const [ownerDetails, setOwnerDetails] = useState()
+
+  //-> useEffect here to fetch matched dogs
+
+  const handleToggle = (inputIndex) => {
+    const selectedDog = matchedList[inputIndex];
+    console.log(`selected dog is ${selectedDog.name}`);
+    setSelectedDogIndex(inputIndex);
+    // -> async function to derive owner data, need to create new state
+    // const fetchOwnerDetails = async () => {
+    //   const res = await fetch("unique route to fetch owner data")
+    //   const ownerData = await res.json()
+    //   console.log(ownerData)
+    //   setOwnerDetails(ownerData)
+    // }
+    // fetchOwnerDetails()
+  };
+
+  const handleDelete = (inputIndex) => {
+    console.log(`${inputIndex} to be deleted`);
+    const trashedList = matchedList.filter((_, i) => i !== inputIndex);
+    setMatchedList(trashedList);
+    // -> async function to delete likeEvent, LikeEvent.delete({two dogs' id})
+    // const deleteMatch = async () => {
+    //   const res = await fetch("unique route to delete likeEvent")
+    //   const deletedLikeEvent = await res.json()
+    //   console.log(deletedLikeEvent)
+    // }
+    // deleteMatch()
+  };
 
   const allMatches = matchedList.map((match, i) => (
-    <MatchRow match={match} index={i} />
+    <MatchRow
+      match={match}
+      index={i}
+      handleToggle={handleToggle}
+      handleDelete={handleDelete}
+    />
   ));
 
   return (
     <Container>
       <Box pt={3}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={5} md={5}>
+          <Grid item xs={12} sm={5} md={6}>
             {allMatches}
           </Grid>
-          <Grid item xs={12} sm={7} md={7}>
-            <MatchDetails />
+          <Grid item xs={12} sm={7} md={6}>
+            {selectedDogIndex >= 0 ? (
+              <MatchDetails
+                matchedList={matchedList}
+                selectedDog={selectedDogIndex}
+                // ownerDetails={ownerDetails}
+              />
+            ) : (
+              ""
+            )}
           </Grid>
         </Grid>
       </Box>

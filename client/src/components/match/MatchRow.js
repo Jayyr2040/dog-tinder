@@ -9,7 +9,7 @@ import { Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   media: {
     height: 0,
@@ -27,11 +27,11 @@ export default function MatchRow(props) {
   return (
     <div>
       <Card className={classes.root} id={0}>
-        <CardActionArea onClick={() => console.log("show card")}>
+        <CardActionArea onClick={() => props.handleToggle(props.index)}>
           <CardHeader
             avatar={<Avatar src={props.match.image} />}
             action={
-              <IconButton onClick={() => console.log("delete card")}>
+              <IconButton onClick={() => props.handleDelete(props.index)}>
                 <DeleteOutlined />
               </IconButton>
             }
