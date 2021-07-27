@@ -29,17 +29,17 @@ router.post("/", (req, res) => {
             return ownerDogs;
         });
 
-    // get the id of the dogs that owner dogs
+    // get id of owner's dogs 
     const results2A = (ownerDogs) => {
         let dogsIdArray = [];
         ownerDogs.forEach(element => dogsIdArray.push( element._id ));
         return dogsIdArray;
     }
 
-    // find other owners that like owner's dogs
+    // find likeEvent where other owners like owner's dogs
     const results2B = (dogsIdArray) =>
-        LikeEvent.find({likee: {$in: dogsIdArray}}, (error, dogsThatUserDogLikes)=> {    
-            return dogsThatUserDogLikes;
+        LikeEvent.find({likee: {$in: dogsIdArray}}, (error, dogMatches)=> {    
+            return dogMatches;
         })
 
     results1()
