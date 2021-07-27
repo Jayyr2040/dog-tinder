@@ -1,7 +1,8 @@
 import NewSessions from "../components/NewSessions";
 import Grid from "@material-ui/core/Grid";
-import { Paper, Typography } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
+import Footer from "../components/home/Footer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(80),
       height: theme.spacing(45),
     },
+  },
+  footer: {
+    textAlign: "center",
+    marginTop: theme.spacing(6),
   },
 }));
 
@@ -31,6 +36,9 @@ function Login(props) {
           </Paper>
         </Grid>
       </Grid>
+      <div className={classes.footer}>
+        <Footer />
+      </div>
     </div>
   );
 }
