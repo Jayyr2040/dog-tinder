@@ -28,7 +28,7 @@ export default function NewSessions(props) {
    
     //  console.log(JSON.stringify(signUp));
       const createNewLogin = async () => {
-        const res = await fetch("http://localhost:3003/sessions", {
+        const res = await fetch("/sessions", {
           method: "POST",
           body: JSON.stringify(signUp),
           headers: {
@@ -49,7 +49,7 @@ const handleDelete = (e) => {
    
     //  console.log(JSON.stringify(signUp));
       const deleteLogin = async () => {
-        const res = await fetch("http://localhost:3003/sessions", {
+        const res = await fetch("/sessions", {
           method: "DELETE",
         });
         const data = await res.json();
