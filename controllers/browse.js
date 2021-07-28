@@ -16,13 +16,13 @@ router.post("/", (req, res) => {
     if (err) {
       res.status(400).json({ error: err.message });
     }
-    const browseUserId = foundUsers.map((user) => user.id);
+    const ownerUsernames = foundUsers.map((user) => user.username);
     Dog.find(
       {
         $and: [
           { breed: req.body.dogBreed },
           { sex: req.body.dogSex },
-          { owner: { $in: browseUserId } },
+          { owner: { $in: ownerUsernames } },
         ],
       },
       (err, foundDogs) => {

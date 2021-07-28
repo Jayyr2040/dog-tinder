@@ -14,7 +14,7 @@ const dogSchema = mongoose.Schema({
   yob: Number,
   breed: String,
   description: { type: String, maxLength: 280 },
-  owner: String,
+  ownerUsername: String, //-> changed from ownerID
 });
 
 module.exports = mongoose.model("Dog", dogSchema);
