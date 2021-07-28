@@ -6,6 +6,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ClearIcon from "@material-ui/icons/Clear";
 import Fab from "@material-ui/core/Fab";
 import { makeStyles } from "@material-ui/core/styles";
+import { Fade } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -20,21 +21,21 @@ const useStyles = makeStyles((theme) => ({
 let dogCounter = 0;
 
 const postSuggestionsReq = {
-  userLocation: "North",
+  userLocation: ["North"],
   dogBreed: "Pomeranian",
-  dogSex: "Male",
+  dogSex: "Female",
 };
 
 const loggedInDog = "60fe1f945df2380e9c79b1bc";
 
 export default function Browse() {
   const classes = useStyles();
-  const [dogSuggestions, setDogSuggestions] = useState([{ name: "demo" }]);
-  const [currentDog, setCurrentDog] = useState(dogSuggestions[dogCounter]);
+  const [dogSuggestions, setDogSuggestions] = useState([]);
+  const [currentDog, setCurrentDog] = useState();
 
   useEffect(() => {
     const fetchDogs = async () => {
-      const res = await fetch("http://localhost:3003/browse", {
+      const res = await fetch("/browse", {
         method: "POST",
         body: JSON.stringify(postSuggestionsReq),
         headers: {
@@ -44,6 +45,7 @@ export default function Browse() {
       const data = await res.json();
       console.log(data);
       setDogSuggestions(data);
+      setCurrentDog(data[dogCounter]);
     };
     fetchDogs();
   }, []);
@@ -89,11 +91,13 @@ export default function Browse() {
         style={{ minHeight: "80vh" }}
       >
         <Grid item md={12}>
-          <ShowDog
-            currentDog={currentDog}
-            chooseDislike={chooseDislike}
-            chooseLike={chooseLike}
-          />
+          <Fade in={true} timeout={1000} style={{ transitionDelay: "500ms" }}>
+            <ShowDog
+              currentDog={currentDog}
+              chooseDislike={chooseDislike}
+              chooseLike={chooseLike}
+            />
+          </Fade>
         </Grid>
         <Grid item md={12}>
           <Fab

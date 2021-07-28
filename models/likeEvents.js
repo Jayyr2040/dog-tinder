@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
 const likeEventSchema = mongoose.Schema({
-  liker: { type: String, required: true },
-  likee: { type: String, required: true },
+  maleDog: { type: String, required: true },
+  femaleDog: { type: String, required: true },
+  maleToFemale: { type: Boolean, default: false },
+  femaleToMale: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model("LikeEvent", likeEventSchema);
