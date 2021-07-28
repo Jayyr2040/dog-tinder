@@ -84,10 +84,7 @@ function App() {
               {loggedInStatus && <Redirect to="/browse" />}
             </Route>
             <Route path="/login">
-              <Login
-                loggedInUserData={loggedInUserData}
-                // loggedInDogData={loggedInDogData}
-              />
+              <Login loggedInUserData={loggedInUserData} />
               {loggedInStatus && <Redirect to="/browse" />}
             </Route>
             <Route path="/browse">
@@ -101,7 +98,14 @@ function App() {
               )}
             </Route>
             <Route path="/matches">
-              {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
+              {loggedInStatus ? (
+                <Matches
+                  currentUser={currentUser}
+                  currentUserDog={currentUserDog}
+                />
+              ) : (
+                <Redirect to="/login" />
+              )}
             </Route>
             <Redirect to="/" />
           </Switch>

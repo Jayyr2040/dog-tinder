@@ -78,4 +78,11 @@ router.get("/:id", (req, res) => {
   });
 });
 
+// OWNER DETAILS
+router.post("/owner", (req, res) => {
+  User.find({ username: req.body.ownerUsername }, (error, ownerDetails) => {
+    res.send(ownerDetails);
+  });
+});
+
 module.exports = router;

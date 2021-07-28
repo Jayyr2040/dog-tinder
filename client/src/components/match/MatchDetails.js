@@ -7,6 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core";
 import { Button } from "@material-ui/core";
+import { Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: "56.25%", // 16:9
+    paddingTop: "70.25%", // 16:9
   },
   header: {
     marginBottom: -20,
@@ -37,14 +38,22 @@ export default function MatchDetails(props) {
           subheader={props.matchedList?.[props.selectedDog]?.breed}
         />
         <CardContent>
-          <Typography variant="subtitle2" className={classes.root}>
+          <Typography variant="paragraph" className={classes.root}>
             {props.matchedList?.[props.selectedDog]?.description}
           </Typography>
-          <Typography variant="h6" style={{ fontWeight: 700, fontSize: 16 }}>
-            Owner Details
-          </Typography>
-          Image on the left
         </CardContent>
+        <CardHeader
+          avatar={<Avatar src={props.ownerDetails?.[0]?.image} />}
+          title={
+            <Typography variant="h6" style={{ fontWeight: 700, fontSize: 16 }}>
+              Owned by {props.ownerDetails?.[0]?.fullName}
+            </Typography>
+          }
+          subheaderTypographyProps={{ variant: "subtitle2" }}
+          subheader={`Good to meet in: ${props.ownerDetails?.[0]?.location.join(
+            ", "
+          )}`}
+        />
         <CardActions>
           <Button
             size="small"
