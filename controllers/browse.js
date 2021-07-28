@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Dog = require("../models/dogs");
+const LikeEvent = require("../models/likeEvents");
 const User = require("../models/users");
 /*
 Algo.
@@ -30,6 +31,23 @@ router.post("/", (req, res) => {
           res.status(400).json({ error: err.message });
         }
         res.status(200).json(foundDogs);
+      }
+    );
+  });
+});
+
+router.post("/match", (req, res) => {
+  LikeEvent.find({ likee: req.body.myDogID }, (err, dogAsLikeeEvents) => {
+    const dogsThatLikeMyDog = dogAsLikeeEvents.map((event) => event.liker);
+    // res.send(dogsThatLikeMyDog);
+    LikeEvent.find(
+      { liker: req.body.myDogID, likee: { $in: dogsThatLikeMyDog } },
+      (err, dogAsLikerEvents) => {
+        const dogsThatILikeToo = dogAsLikerEvents.map((event) => event.likee);
+        // res.send(dogsThatILikeToo);
+        Dog.find({ _id: { $in: dogsThatILikeToo } }, (err, matchedDogs) => {
+          res.send(matchedDogs);
+        });
       }
     );
   });

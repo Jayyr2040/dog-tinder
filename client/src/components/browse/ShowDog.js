@@ -36,7 +36,7 @@ export default function ShowDog(props) {
             </Typography>
             <Typography variant="subtitle2" style={{ fontWeight: 700 }}>
               {props.currentDog?.breed}{" "}
-              {props.currentDog?.sex === "F" ? "♀" : "♂"}
+              {props.currentDog?.sex === "Female" ? "♀" : "♂"}
             </Typography>
             <br />
             <Typography variant="body2">

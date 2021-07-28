@@ -24,7 +24,8 @@ export default function Browse(props) {
   const [dogSuggestions, setDogSuggestions] = useState([]);
   const [currentDog, setCurrentDog] = useState();
 
-  let loggedInDog = props.currentUserDog?._id;
+  let loggedInDogID = props.currentUserDog?._id;
+  let loggedInDogSex = props.currentUserDog?.sex;
 
   const postSuggestionsReq = {
     userLocation: props.currentUser?.location,
@@ -59,17 +60,16 @@ export default function Browse(props) {
   };
 
   const chooseLike = (likedDog) => {
-    console.log(likedDog);
+    // console.log(likedDog);
     console.log(`Love ${likedDog.name}!`);
     dogCounter === dogSuggestions.length - 1
       ? (dogCounter = 0)
       : (dogCounter += 1);
     setCurrentDog(dogSuggestions[dogCounter]);
-
     const likeDog = async () => {
       const res = await fetch("/likeevents", {
         method: "POST",
-        body: JSON.stringify({ liker: loggedInDog, likee: likedDog._id }),
+        body: JSON.stringify({ liker: loggedInDogID, likee: likedDog._id }),
         headers: {
           "Content-Type": "application/json",
         },
