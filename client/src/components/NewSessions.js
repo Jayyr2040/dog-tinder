@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core";
 import { useState } from "react";
 import { Button } from "@material-ui/core";
 import { Container } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles({
   form: {
@@ -12,56 +14,45 @@ const useStyles = makeStyles({
   field: {
     marginTop: 10,
   },
+  logo: {
+    alignItems: "center",
+    justify: "center",
+  },
+  footer: {
+    marginTop: 40,
+  },
 });
 
 export default function NewSessions(props) {
   const classes = useStyles();
-  const [signUp, setSignUp] = useState({
+  const [signIn, setSignIn] = useState({
     username: "",
     password: "",
   });
 
-
-  
   const handleSubmit = (e) => {
     e.preventDefault();
-   
-    //  console.log(JSON.stringify(signUp));
-      const createNewLogin = async () => {
-        const res = await fetch("/sessions", {
-          method: "POST",
-          body: JSON.stringify(signUp),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        console.log("user", data.currentUser);
-        console.log("dog", data.dog._id);
-        props.setCurrentData(data.dog._id);
-      };
-      createNewLogin();
-    
+    console.log(JSON.stringify(signIn));
+    const createNewLogin = async () => {
+      const res = await fetch("/sessions", {
+        method: "POST",
+        body: JSON.stringify(signIn),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log("user", data.currentUser);
+      props.loggedInUserData(data.currentUser);
+    };
+    createNewLogin();
   };
-
-const handleDelete = (e) => {
-    e.preventDefault();
-   
-    //  console.log(JSON.stringify(signUp));
-      const deleteLogin = async () => {
-        const res = await fetch("/sessions", {
-          method: "DELETE",
-        });
-        const data = await res.json();
-      };
-      deleteLogin();
-    
-  };
-
 
   return (
     <Container>
-      <h2>Login for account</h2>
+      <Grid container justify="center">
+        <img src="https://i.ibb.co/KjSLSwS/logo.png" height="60" alt="logo" />
+      </Grid>
       <form
         className={classes.form}
         noValidate
@@ -69,42 +60,36 @@ const handleDelete = (e) => {
         onSubmit={handleSubmit}
       >
         <TextField
-          onChange={(e) => setSignUp({ ...signUp, username: e.target.value })}
+          onChange={(e) => setSignIn({ ...signIn, username: e.target.value })}
           className={classes.field}
-          label="username"
+          label="Username"
           variant="outlined"
           fullWidth
         />
         <br />
         <TextField
-          onChange={(e) => setSignUp({ ...signUp, password: e.target.value })}
+          onChange={(e) => setSignIn({ ...signIn, password: e.target.value })}
           className={classes.field}
-          label="password"
+          label="Password"
+          type="password"
           variant="outlined"
           fullWidth
         />
         <br />
         <Button
           type="submit"
-          className={classes.field}
+          className={classes.form}
           color="secondary"
           variant="contained"
           size="large"
+          fullWidth
         >
-          Login
+          <Typography style={{ fontWeight: 700 }}>Log in</Typography>
         </Button>
       </form>
-      <Button
-          type="submit"
-          className={classes.field}
-          color="secondary"
-          variant="contained"
-          size="large"
-          onClick={handleDelete}
-        >
-          Login Out
-        </Button>
-       {props.currentData}
+      <Typography className={classes.footer} align="center" variant="subtitle2">
+        Forgot password?
+      </Typography>
     </Container>
   );
 }
