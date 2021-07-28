@@ -62,7 +62,7 @@ export default function CreateAccount(props) {
       setButtonState(true);
       const createNewAccount = async () => {
         try {
-          const res = await fetch("http://localhost:3003/users", {
+          const res = await fetch("/users", {
             method: "POST",
             body: JSON.stringify(signUp),
             headers: {

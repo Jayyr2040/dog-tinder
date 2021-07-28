@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3003;
 const MONGODB_URI = process.env.MONGODB_URI;
 const cors = require("cors");
 const session = require("express-session");
+const path = require('path');
 
 //=================
 // Config - Express
@@ -46,12 +47,13 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(express.static(path.join(__dirname, "./client/build")));
 
 //====================
 // Config - Controller
 //====================
-app.get("/", (req, res) => {
-  res.send("Dog Tinder");
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/build", "index.html"));
 });
 const usersController = require("./controllers/users");
 const dogsController = require("./controllers/dogs");

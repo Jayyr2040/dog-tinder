@@ -1,4 +1,4 @@
-import NewSessions from "../components/NewSessions";
+import NewSession from "../components/login/NewSession";
 import Grid from "@material-ui/core/Grid";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
@@ -30,7 +30,7 @@ function Login(props) {
         <Grid item xs={12} sm={6} md={6}></Grid>
         <Grid item xs={12} sm={6} md={6}>
           <Paper className={classes.root} elevation={2}>
-            <NewSessions
+            <NewSession
               loggedInUserData={(userData) => props.loggedInUserData(userData)}
             />
           </Paper>

@@ -56,7 +56,7 @@ export default function UpdateProfile(props) {
       const createNewAccount = async () => {
         try {
           const res = await fetch(
-            "http://localhost:3003/users/" + props.userId,
+            "/users/" + props.userId,
             {
               method: "PUT",
               body: JSON.stringify(updateUser),

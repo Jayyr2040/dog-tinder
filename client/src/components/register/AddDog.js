@@ -78,7 +78,7 @@ export default function AddDog(props) {
       setButtonState(true);
       const createDog = async () => {
         try {
-          const res = await fetch("http://localhost:3003/dogs/", {
+          const res = await fetch("/dogs", {
             method: "POST",
             body: JSON.stringify(dogData),
             headers: {
