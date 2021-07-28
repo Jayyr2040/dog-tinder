@@ -1,18 +1,15 @@
-import React from 'react';
-import { TextField } from '@material-ui/core';
-import { useField } from 'formik';
+import React from "react";
+import { TextField } from "@material-ui/core";
+import { useField } from "formik";
 
-const TextfieldWrapper = ({
-  name,
-  ...otherProps
-}) => {
+const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, mata] = useField(name);
 
   const configTextfield = {
     ...field,
     ...otherProps,
     fullWidth: true,
-    variant: 'outlined'
+    variant: "outlined",
   };
 
   if (mata && mata.touched && mata.error) {
@@ -20,9 +17,7 @@ const TextfieldWrapper = ({
     configTextfield.helperText = mata.error;
   }
 
-  return (
-    <TextField {...configTextfield} />
-  );
+  return <TextField {...configTextfield} />;
 };
 
 export default TextfieldWrapper;

@@ -1,31 +1,22 @@
-import React from 'react';
-import { Button } from '@material-ui/core';
-import { useFormikContext } from 'formik';
+import React from "react";
+import { Button } from "@material-ui/core";
+import { useFormikContext } from "formik";
 
-const ButtonWrapper = ({
-  children,
-  ...otherProps
-}) => {
+const ButtonWrapper = ({ children, ...otherProps }) => {
   const { submitForm } = useFormikContext();
 
   const handleSubmit = () => {
     submitForm();
-  }
+  };
 
   const configButton = {
-    variant: 'contained',
-    color: 'primary',
+    variant: "contained",
+    color: "primary",
     fullWidth: true,
-    onClick: handleSubmit
-  }
+    onClick: handleSubmit,
+  };
 
-  return (
-    <Button
-      {...configButton}
-    >
-      {children}
-    </Button>
-  );
+  return <Button {...configButton}>{children}</Button>;
 };
 
 export default ButtonWrapper;

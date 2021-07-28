@@ -1,3 +1,35 @@
 body {
   background-color: whitesmoke;
 }
+
+.checkboxes {
+  text-align: center;
+}
+
+.image-uploader {
+  text-align: center;
+}
+
+.upload-image-btn {
+  margin: 20px;
+  padding: 5px 15px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #6e1863;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.upload-image-btn:hover {
+  background-color: #9b41a3;
+}
+
+.upload-image-btn:active {
+  background-color: #9b41a3;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}

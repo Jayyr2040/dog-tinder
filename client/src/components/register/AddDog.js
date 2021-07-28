@@ -56,12 +56,14 @@ export default function AddDog(props) {
     const formData = new FormData();
     formData.append("file", uploadImage);
     formData.append("upload_preset", "dog_tinder_users");
+    setLoading(true);
 
     Axios.post(
       "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
       formData
     ).then((response) => {
       setDisplayImage(response.data.secure_url);
+      setLoading(false);
     });
   };
 
@@ -97,28 +99,37 @@ export default function AddDog(props) {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={8} md={6} lg={6}>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Sign up for account</Typography>
+            <Typography variant="h5" align="center">
+              Sign up for account
+            </Typography>
             <div className={classes.formWrapper}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <Image
-                  cloudName="dsag331qk"
-                  style={{ height: "280px", width: "280px" }}
-                  publicId={displayImage}
-                />
-              )}
-              <input
-                name="image"
-                type="file"
-                onChange={(e) => {
-                  setUploadImage(e.target.files[0]);
-                }}
-                accept=".jpg,.jpeg,.gif,.png"
-              />
-              <button onClick={upload}>Upload Image</button>
+              <div className="image-uploader">
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImage}
+                  />
+                )}
+                <button>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImage(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
+                  />
+                  Choose an image
+                </button>
+                <button onClick={upload} class="upload-image-btn">
+                  Upload Image
+                </button>
+              </div>
               <Formik
                 initialValues={{
                   ...INITIAL_FORM_STATE,
@@ -154,21 +165,14 @@ export default function AddDog(props) {
                     <MenuItem value="Pomeranian">Pomeranian</MenuItem>
                     <MenuItem value="Dachshund">Dachshund</MenuItem>
                   </Field>
-                  <div className="sex">
-                    <label>
-                      <Field name="sex" type="radio" value="Male" as={Radio} />
-                      Male
-                    </label>
-                    <label>
-                      <Field
-                        name="sex"
-                        type="radio"
-                        value="Female"
-                        as={Radio}
-                      />
-                      Female
-                    </label>
-                  </div>
+                  <label>
+                    <Field name="sex" type="radio" value="Male" as={Radio} />
+                    Male
+                  </label>
+                  <label>
+                    <Field name="sex" type="radio" value="Female" as={Radio} />
+                    Female
+                  </label>
                   <Button type="submit" variant="contained" color="secondary">
                     Submit
                   </Button>

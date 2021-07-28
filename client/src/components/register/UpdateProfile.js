@@ -53,12 +53,14 @@ export default function UpdateProfile(props) {
     const formData = new FormData();
     formData.append("file", uploadImage);
     formData.append("upload_preset", "dog_tinder_users");
+    setLoading(true);
 
     Axios.post(
       "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
       formData
     ).then((response) => {
       setDisplayImage(response.data.secure_url);
+      setLoading(false);
     });
   };
 
@@ -94,28 +96,36 @@ export default function UpdateProfile(props) {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={8} md={6} lg={6}>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Sign up for account</Typography>
+            <Typography variant="h5" align="center">
+              Sign up for account
+            </Typography>
             <div className={classes.formWrapper}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <Image
-                  cloudName="dsag331qk"
-                  style={{ height: "280px", width: "280px" }}
-                  publicId={displayImage}
-                />
-              )}
-              <input
-                name="image"
-                type="file"
-                onChange={(e) => {
-                  setUploadImage(e.target.files[0]);
-                }}
-                accept=".jpg,.jpeg,.gif,.png"
-              />
-              <button onClick={upload}>Upload Image</button>
+              <div className="image-uploader">
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImage}
+                  />
+                )}
+                <div>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImage(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
+                  />
+                </div>
+                <button onClick={upload} class="upload-image-btn">
+                  Upload Image
+                </button>
+              </div>
               <Formik
                 initialValues={{
                   ...INITIAL_FORM_STATE,
@@ -136,57 +146,61 @@ export default function UpdateProfile(props) {
                     multiline={true}
                     rows={4}
                   />
-                  <div>
-                    <label>
-                      <Field
-                        name="location"
-                        type="checkbox"
-                        placeholder="North"
-                        value="North"
-                        as={Checkbox}
-                      />
-                      North
-                    </label>
-                    <label>
-                      <Field
-                        name="location"
-                        type="checkbox"
-                        placeholder="South"
-                        value="South"
-                        as={Checkbox}
-                      />
-                      South
-                    </label>
-                    <label>
-                      <Field
-                        name="location"
-                        type="checkbox"
-                        placeholder="East"
-                        value="East"
-                        as={Checkbox}
-                      />
-                      East
-                    </label>
-                    <label>
-                      <Field
-                        name="location"
-                        type="checkbox"
-                        placeholder="West"
-                        value="West"
-                        as={Checkbox}
-                      />
-                      West
-                    </label>
-                    <label>
-                      <Field
-                        name="location"
-                        type="checkbox"
-                        placeholder="Central"
-                        value="Central"
-                        as={Checkbox}
-                      />
-                      Central
-                    </label>
+                  <div className="checkboxes">
+                    <div className="checkboxes-row-1">
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="North"
+                          value="North"
+                          as={Checkbox}
+                        />
+                        North
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="South"
+                          value="South"
+                          as={Checkbox}
+                        />
+                        South
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="East"
+                          value="East"
+                          as={Checkbox}
+                        />
+                        East
+                      </label>
+                    </div>
+                    <div className="checkboxes-row-2">
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="West"
+                          value="West"
+                          as={Checkbox}
+                        />
+                        West
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="Central"
+                          value="Central"
+                          as={Checkbox}
+                        />
+                        Central
+                      </label>
+                    </div>
                   </div>
                   <Button>Submit Form</Button>
                 </Form>

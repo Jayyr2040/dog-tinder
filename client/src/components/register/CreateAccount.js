@@ -8,6 +8,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import Textfield from "./FormsUI/Textfield";
 import Button from "./FormsUI/Button";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -30,11 +31,40 @@ const INITIAL_FORM_STATE = {
   email: "",
 };
 
+// const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+
 const FORM_VALIDATION = Yup.object().shape({
-  username: Yup.string().required("Required"),
-  password: Yup.string().required("Required"),
+  username: Yup.string()
+    .required("Required")
+    .test(
+      "username-backend-validation",
+      "Username is taken",
+      async (username) => {
+        const {
+          data: { success },
+        } = await axios.post("http://localhost:3003/register/validUsername", {
+          username: username,
+        });
+        return success;
+      }
+    ),
+  password: Yup.string().required("Required"), // .matches(PASSWORD_REGEX, "Please enter a strong password")
   fullName: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email.").required("Required"),
+  email: Yup.string()
+    .email("Invalid email.")
+    .required("Required")
+    .test(
+      "email-backend-validation",
+      "Email address is taken",
+      async (email) => {
+        const {
+          data: { success },
+        } = await axios.post("http://localhost:3003/register/validEmail", {
+          email: email,
+        });
+        return success;
+      }
+    ),
 });
 
 export default function CreateAccount(props) {
@@ -69,9 +99,11 @@ export default function CreateAccount(props) {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={8} md={6} lg={6}>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Sign up for account</Typography>
+            <Typography variant="h5" align="center">
+              Sign up for account
+            </Typography>
             <div className={classes.formWrapper}>
               <Formik
                 initialValues={{
