@@ -12,6 +12,8 @@ import Textfield from "./FormsUI/Textfield";
 import { Radio } from "@material-ui/core";
 import { Select } from "@material-ui/core";
 import Button from "./FormsUI/Button";
+import Axios from "axios";
+import { Image } from "cloudinary-react";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -47,47 +49,35 @@ const FORM_VALIDATION = Yup.object().shape({
 
 export default function AddDog(props) {
   const classes = useStyles();
-  const [uploadedImage, setUploadedImage] = useState(
+  const [displayImage, setDisplayImage] = useState(
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
+  const [uploadImage, setUploadImage] = useState("");
   const [dogData, setDogData] = useState({
     sex: "Female",
     owner: props.userId,
   });
   const [loading, setLoading] = useState(false);
 
-  const uploadImage = (e) => {
-    const fetchImageURL = async () => {
-      const files = e.target.files;
-      const data = new FormData();
-      data.append("file", files[0]);
-      data.append("upload_preset", "dog_tinder_dogs");
-      setLoading(true);
+  const upload = () => {
+    const formData = new FormData();
+    formData.append("file", uploadImage);
+    formData.append("upload_preset", "dog_tinder_users");
 
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-
-      const file = await res.json();
-      console.log(file.secure_url);
-
-      setUploadedImage(file.secure_url);
-      setDogData({ ...dogData, image: file.secure_url });
-      setLoading(false);
-    };
-    fetchImageURL();
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImage(response.data.secure_url);
+    });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (formValue) => {
     const createDog = async () => {
       try {
         const res = await fetch("http://localhost:3003/dogs/", {
           method: "POST",
-          body: JSON.stringify(dogData),
+          body: JSON.stringify(formValue),
           headers: {
             "Content-Type": "application/json",
           },
@@ -115,44 +105,42 @@ export default function AddDog(props) {
           <Paper elevation={5} className={classes.paper}>
             <Typography variant="h5">Sign up for account</Typography>
             <div className={classes.formWrapper}>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Image
+                  cloudName="dsag331qk"
+                  style={{ height: "280px", width: "280px" }}
+                  publicId={displayImage}
+                />
+              )}
+              <input
+                name="image"
+                type="file"
+                onChange={(e) => {
+                  setUploadImage(e.target.files[0]);
+                }}
+              />
+              <button onClick={upload}>Upload Image</button>
               <Formik
                 initialValues={{
                   ...INITIAL_FORM_STATE,
                 }}
                 validationSchema={FORM_VALIDATION}
-                // onSubmit={handleSubmit}
-                onSubmit={(data, { setSubmitting }) => {
-                  setSubmitting(true);
-                  console.log("submit: ", data);
-                  setSubmitting(false);
-                }}
+                onSubmit={handleSubmit}
+                // onSubmit={(data, { setSubmitting }) => {
+                //   setSubmitting(true);
+                //   console.log("submit: ", data);
+                //   setSubmitting(false);
+                // }}
               >
-                {({ values, errors }) => (
+                {/* {({ values, errors }) => ( */}
                   <Form>
-                    {loading ? (
-                      <CircularProgress />
-                    ) : (
-                      <img
-                        src={uploadedImage}
-                        style={{ height: "280px", width: "280px" }}
-                        alt=""
-                      />
-                    )}
-                    {/* <Button
-                      variant="contained"
-                      component="label"
-                      color="secondary"
-                      style={{ maxWidth: "180px", maxHeight: "25px" }}
-                    >
-                      Upload File */}
-                    <Field
-                      type="file"
+                    <Textfield
                       name="image"
-                      placeholder="Upload an image"
-                      onChange={uploadImage}
-                      // hidden
+                      value={displayImage}
+                      className={classes.field}
                     />
-                    {/* </Button> */}
                     <Textfield
                       name="name"
                       label="Name"
@@ -203,10 +191,10 @@ export default function AddDog(props) {
                     <Button type="submit" variant="contained" color="secondary">
                       Submit
                     </Button>
-                    <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
                   </Form>
-                )}
+                {/* )} */}
               </Formik>
             </div>
           </Paper>

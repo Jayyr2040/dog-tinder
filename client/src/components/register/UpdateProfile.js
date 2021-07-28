@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/";
 import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core/";
@@ -10,6 +10,8 @@ import * as Yup from "yup";
 import Textfield from "./FormsUI/Textfield";
 import Button from "./FormsUI/Button";
 import Checkbox from "@material-ui/core/Checkbox";
+import Axios from "axios";
+import { Image } from "cloudinary-react";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -41,36 +43,23 @@ const FORM_VALIDATION = Yup.object().shape({
 
 export default function UpdateProfile(props) {
   const classes = useStyles();
-  const [updateUser, setUpdateUser] = useState({});
-  const [uploadedImage, setUploadedImage] = useState(
+  const [displayImage, setDisplayImage] = useState(
     "https://image.flaticon.com/icons/png/512/848/848043.png"
   );
+  const [uploadImage, setUploadImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const uploadImage = (e) => {
-    const fetchImageURL = async () => {
-      const files = e.target.files;
-      const data = new FormData();
-      data.append("file", files[0]);
-      data.append("upload_preset", "dog_tinder_users");
-      setLoading(true);
+  const upload = () => {
+    const formData = new FormData();
+    formData.append("file", uploadImage);
+    formData.append("upload_preset", "dog_tinder_users");
 
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-
-      const file = await res.json();
-      console.log(file.secure_url);
-
-      setUploadedImage(file.secure_url);
-      setUpdateUser({ ...updateUser, image: file.secure_url });
-      setLoading(false);
-    };
-    fetchImageURL();
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImage(response.data.secure_url);
+    });
   };
 
   const handleSubmit = (formValue) => {
@@ -106,34 +95,41 @@ export default function UpdateProfile(props) {
           <Paper elevation={5} className={classes.paper}>
             <Typography variant="h5">Sign up for account</Typography>
             <div className={classes.formWrapper}>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Image
+                  cloudName="dsag331qk"
+                  style={{ height: "280px", width: "280px" }}
+                  publicId={displayImage}
+                />
+              )}
+              <input
+                name="image"
+                type="file"
+                onChange={(e) => {
+                  setUploadImage(e.target.files[0]);
+                }}
+              />
+              <button onClick={upload}>Upload Image</button>
               <Formik
                 initialValues={{
                   ...INITIAL_FORM_STATE,
                 }}
                 validationSchema={FORM_VALIDATION}
-                // onSubmit={handleSubmit}
-                onSubmit={(data, { setSubmitting }) => {
-                  setSubmitting(true);
-                  console.log("submit: ", data);
-                  setSubmitting(false);
-                }}
+                onSubmit={handleSubmit}
+                // onSubmit={(data, { setSubmitting }) => {
+                //   setSubmitting(true);
+                //   console.log("submit: ", data);
+                //   setSubmitting(false);
+                // }}
               >
-                {({ values, errors }) => (
+                {/* {({ values, errors }) => ( */}
                   <Form>
-                    {loading ? (
-                      <CircularProgress />
-                    ) : (
-                      <img
-                        src={uploadedImage}
-                        style={{ height: "280px", width: "280px" }}
-                        alt=""
-                      />
-                    )}
-                    <Field
+                    <Textfield
                       name="image"
-                      type="file"
-                      placeholder={uploadedImage}
-                      onChange={uploadImage}
+                      value={displayImage}
+                      className={classes.field}
                     />
                     <Textfield
                       name="fullName"
@@ -200,10 +196,10 @@ export default function UpdateProfile(props) {
                       </label>
                     </div>
                     <Button>Submit Form</Button>
-                    <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
                   </Form>
-                )}
+                {/* )} */}
               </Formik>
             </div>
           </Paper>
