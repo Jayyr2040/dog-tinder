@@ -59,13 +59,18 @@ const usersController = require("./controllers/users");
 const dogsController = require("./controllers/dogs");
 const likeEventsController = require("./controllers/likeEvents");
 const browseController = require("./controllers/browse");
+const matchesController = require("./controllers/matches.js");
 const sessionsController = require("./controllers/sessions.js");
+<<<<<<< HEAD
 const likeEventsMatchController = require("./controllers/likeEventsMatch.js");
+=======
+>>>>>>> newschema
 
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
+app.use("/matches", matchesController);
 app.use("/sessions", sessionsController);
 app.use("/likematch", likeEventsMatchController);
 

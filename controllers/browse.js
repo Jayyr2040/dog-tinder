@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Dog = require("../models/dogs");
+const LikeEvent = require("../models/likeEvents");
 const User = require("../models/users");
 /*
 Algo.
@@ -22,7 +23,7 @@ router.post("/", (req, res) => {
         $and: [
           { breed: req.body.dogBreed },
           { sex: req.body.dogSex },
-          { owner: { $in: ownerUsernames } },
+          { ownerUsername: { $in: ownerUsernames } },
         ],
       },
       (err, foundDogs) => {

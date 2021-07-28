@@ -14,9 +14,12 @@ router.post("/", (req, res) => {
     } else if (!foundUser) {
       res.send('<a  href="/">Sorry, no user found </a>');
     } else if (bcrypt.compareSync(req.body.password, foundUser.password)) {
-      req.session.currentUser = foundUser;
-      console.log("log in user", req.session.currentUser);
-      res.send(req.session);
+      Dog.findOne({ ownerUsername: req.body.username }, (err, foundDog) => {
+        req.session.currentUser = foundUser;
+        req.session.currentDog = foundDog;
+        console.log("log in user", req.session.currentUser);
+        res.send(req.session);
+      });
     } else {
       res.send('<a href="/"> password does not match </a>');
     }
@@ -34,7 +37,6 @@ router.get("/check", (req, res) => {
 
 // logout
 router.delete("/", (req, res) => {
-  // console.log("log out user", req.session.currentUser);
   req.session.destroy(() => {
     res.send("user has logged out");
   });
