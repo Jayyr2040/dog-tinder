@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, MenuItem } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-// import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
@@ -32,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 const INITIAL_FORM_STATE = {
   name: "",
   breed: "",
-  image: "",
   sex: "",
   yob: null,
   description: "",
@@ -41,7 +39,6 @@ const INITIAL_FORM_STATE = {
 const FORM_VALIDATION = Yup.object().shape({
   name: Yup.string().required("Required"),
   breed: Yup.string(),
-  image: Yup.string(),
   sex: Yup.string().required("Required"),
   yob: Yup.number().min(2000).max(2019),
   description: Yup.string(),
@@ -53,10 +50,6 @@ export default function AddDog(props) {
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
   const [uploadImage, setUploadImage] = useState("");
-  const [dogData, setDogData] = useState({
-    sex: "Female",
-    owner: props.userId,
-  });
   const [loading, setLoading] = useState(false);
 
   const upload = () => {
@@ -73,11 +66,14 @@ export default function AddDog(props) {
   };
 
   const handleSubmit = (formValue) => {
+    const imageURL = { image: displayImage };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
     const createDog = async () => {
       try {
         const res = await fetch("http://localhost:3003/dogs/", {
           method: "POST",
-          body: JSON.stringify(formValue),
+          body: JSON.stringify(merge),
           headers: {
             "Content-Type": "application/json",
           },
@@ -120,6 +116,7 @@ export default function AddDog(props) {
                 onChange={(e) => {
                   setUploadImage(e.target.files[0]);
                 }}
+                accept=".jpg,.jpeg,.gif,.png"
               />
               <button onClick={upload}>Upload Image</button>
               <Formik
@@ -128,73 +125,54 @@ export default function AddDog(props) {
                 }}
                 validationSchema={FORM_VALIDATION}
                 onSubmit={handleSubmit}
-                // onSubmit={(data, { setSubmitting }) => {
-                //   setSubmitting(true);
-                //   console.log("submit: ", data);
-                //   setSubmitting(false);
-                // }}
               >
-                {/* {({ values, errors }) => ( */}
-                  <Form>
-                    <Textfield
-                      name="image"
-                      value={displayImage}
-                      className={classes.field}
-                    />
-                    <Textfield
-                      name="name"
-                      label="Name"
-                      className={classes.field}
-                    />
-                    <Textfield
-                      name="yob"
-                      label="Year of Birth"
-                      className={classes.field}
-                    />
-                    <Textfield
-                      name="description"
-                      label="Description"
-                      className={classes.field}
-                      multiline={true}
-                      rows={4}
-                    />
-                    <Field
-                      name="breed"
-                      type="select"
-                      placeholder="breed"
-                      fullWidth
-                      as={Select}
-                    >
-                      <MenuItem value="Pomeranian">Pomeranian</MenuItem>
-                      <MenuItem value="Dachshund">Dachshund</MenuItem>
-                    </Field>
-                    <div className="sex">
-                      <label>
-                        <Field
-                          name="sex"
-                          type="radio"
-                          value="Male"
-                          as={Radio}
-                        />
-                        Male
-                      </label>
-                      <label>
-                        <Field
-                          name="sex"
-                          type="radio"
-                          value="Female"
-                          as={Radio}
-                        />
-                        Female
-                      </label>
-                    </div>
-                    <Button type="submit" variant="contained" color="secondary">
-                      Submit
-                    </Button>
-                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
-                  </Form>
-                {/* )} */}
+                <Form>
+                  <Textfield
+                    name="name"
+                    label="Name"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="yob"
+                    label="Year of Birth"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="description"
+                    label="Description"
+                    className={classes.field}
+                    multiline={true}
+                    rows={4}
+                  />
+                  <Field
+                    name="breed"
+                    type="select"
+                    placeholder="breed"
+                    fullWidth
+                    as={Select}
+                  >
+                    <MenuItem value="Pomeranian">Pomeranian</MenuItem>
+                    <MenuItem value="Dachshund">Dachshund</MenuItem>
+                  </Field>
+                  <div className="sex">
+                    <label>
+                      <Field name="sex" type="radio" value="Male" as={Radio} />
+                      Male
+                    </label>
+                    <label>
+                      <Field
+                        name="sex"
+                        type="radio"
+                        value="Female"
+                        as={Radio}
+                      />
+                      Female
+                    </label>
+                  </div>
+                  <Button type="submit" variant="contained" color="secondary">
+                    Submit
+                  </Button>
+                </Form>
               </Formik>
             </div>
           </Paper>

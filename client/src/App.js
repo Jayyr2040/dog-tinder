@@ -1,17 +1,26 @@
-import { Route, Link, Redirect, Switch } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Route, Redirect, Switch } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Browse from "./pages/Browse";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import Matches from "./pages/Matches";
+import NavBar from "./components/home/NavBar";
+import { makeStyles } from "@material-ui/core/styles";
+import { Container } from "@material-ui/core";
+import "./App.css";
 
 const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#FF9B01",
     },
+    secondary: {
+      main: "#d4524d",
+    },
   },
   typography: {
-    fontFamily: "Open Sans",
+    fontFamily: "Poppins",
     fontWeightLight: 100,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
@@ -19,22 +28,72 @@ const theme = createMuiTheme({
   },
 });
 
+const useStyles = makeStyles((theme) => ({
+  toolbar: {
+    marginTop: 70,
+  },
+}));
+
 function App() {
+  const classes = useStyles();
+  const [currentUser, setCurrentUser] = useState();
+  const [loggedInStatus, setLoggedInStatus] = useState(false);
+  useEffect(() => {
+    const fetchSession = async () => {
+      const res = await fetch("/sessions/check", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log("check useEffect server response", data);
+      if (data.currentUser === undefined) {
+        setLoggedInStatus(false);
+      } else {
+        setCurrentUser(data.currentUser);
+        setLoggedInStatus(true);
+      }
+    };
+    fetchSession();
+  }, []);
+
+  const loggedInUserData = (userData) => {
+    console.log("loggedInUserData", userData);
+    setCurrentUser(userData);
+    setLoggedInStatus(true);
+  };
+
   return (
-    <div>
+    <div className={classes.toolbar}>
       <ThemeProvider theme={theme}>
-        <h1>Dog Tinder</h1>
-        <Link to="/register">Register</Link>
-      <Link to="/login">Login</Link>
-        <Switch>
-          <Route path="/register">
-            <Register />
-          </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        </Switch>
-        <Browse />
+        {loggedInStatus && <NavBar currentUser={currentUser} />}
+        <Container maxWidth="md">
+          <Switch>
+            <Route exact path="/">
+              {loggedInStatus ? (
+                <Redirect to="/browse" />
+              ) : (
+                <Redirect to="/login" />
+              )}
+            </Route>
+            <Route path="/register">
+              <Register />
+              {loggedInStatus && <Redirect to="/browse" />}
+            </Route>
+            <Route path="/login">
+              <Login loggedInUserData={loggedInUserData} />
+              {loggedInStatus && <Redirect to="/browse" />}
+            </Route>
+            <Route path="/browse">
+              {loggedInStatus ? <Browse /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/matches">
+              {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
+            </Route>
+            <Redirect to="/" />
+          </Switch>
+        </Container>
       </ThemeProvider>
     </div>
   );

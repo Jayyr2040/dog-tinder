@@ -71,7 +71,7 @@ export default function CreateAccount(props) {
       >
         <Grid item xs={12} md={4} lg={4}>
           <Paper elevation={5} className={classes.paper}>
-          <Typography variant="h5">Sign up for account</Typography>
+            <Typography variant="h5">Sign up for account</Typography>
             <div className={classes.formWrapper}>
               <Formik
                 initialValues={{

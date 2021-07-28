@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/";
 import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core/";
@@ -63,11 +63,14 @@ export default function UpdateProfile(props) {
   };
 
   const handleSubmit = (formValue) => {
+    const imageURL = { image: displayImage };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
     const createNewAccount = async () => {
       try {
         const res = await fetch("http://localhost:3003/users/" + props.userId, {
           method: "PUT",
-          body: JSON.stringify(formValue),
+          body: JSON.stringify(merge),
           headers: {
             "Content-Type": "application/json",
           },
@@ -110,6 +113,7 @@ export default function UpdateProfile(props) {
                 onChange={(e) => {
                   setUploadImage(e.target.files[0]);
                 }}
+                accept=".jpg,.jpeg,.gif,.png"
               />
               <button onClick={upload}>Upload Image</button>
               <Formik
@@ -118,88 +122,74 @@ export default function UpdateProfile(props) {
                 }}
                 validationSchema={FORM_VALIDATION}
                 onSubmit={handleSubmit}
-                // onSubmit={(data, { setSubmitting }) => {
-                //   setSubmitting(true);
-                //   console.log("submit: ", data);
-                //   setSubmitting(false);
-                // }}
               >
-                {/* {({ values, errors }) => ( */}
-                  <Form>
-                    <Textfield
-                      name="image"
-                      value={displayImage}
-                      className={classes.field}
-                    />
-                    <Textfield
-                      name="fullName"
-                      label="Full Name"
-                      className={classes.field}
-                    />
-                    <Textfield
-                      name="description"
-                      label="Description"
-                      className={classes.field}
-                      multiline={true}
-                      rows={4}
-                    />
-                    <div>
-                      <label>
-                        <Field
-                          name="location"
-                          type="checkbox"
-                          placeholder="North"
-                          value="North"
-                          as={Checkbox}
-                        />
-                        North
-                      </label>
-                      <label>
-                        <Field
-                          name="location"
-                          type="checkbox"
-                          placeholder="South"
-                          value="South"
-                          as={Checkbox}
-                        />
-                        South
-                      </label>
-                      <label>
-                        <Field
-                          name="location"
-                          type="checkbox"
-                          placeholder="East"
-                          value="East"
-                          as={Checkbox}
-                        />
-                        East
-                      </label>
-                      <label>
-                        <Field
-                          name="location"
-                          type="checkbox"
-                          placeholder="West"
-                          value="West"
-                          as={Checkbox}
-                        />
-                        West
-                      </label>
-                      <label>
-                        <Field
-                          name="location"
-                          type="checkbox"
-                          placeholder="Central"
-                          value="Central"
-                          as={Checkbox}
-                        />
-                        Central
-                      </label>
-                    </div>
-                    <Button>Submit Form</Button>
-                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
-                  </Form>
-                {/* )} */}
+                <Form>
+                  <Textfield
+                    name="fullName"
+                    label="Full Name"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="description"
+                    label="Description"
+                    className={classes.field}
+                    multiline={true}
+                    rows={4}
+                  />
+                  <div>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="North"
+                        value="North"
+                        as={Checkbox}
+                      />
+                      North
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="South"
+                        value="South"
+                        as={Checkbox}
+                      />
+                      South
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="East"
+                        value="East"
+                        as={Checkbox}
+                      />
+                      East
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="West"
+                        value="West"
+                        as={Checkbox}
+                      />
+                      West
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="Central"
+                        value="Central"
+                        as={Checkbox}
+                      />
+                      Central
+                    </label>
+                  </div>
+                  <Button>Submit Form</Button>
+                </Form>
               </Formik>
             </div>
           </Paper>
