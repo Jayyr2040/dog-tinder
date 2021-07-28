@@ -13,6 +13,62 @@ router.get("/", (req, res) => {
 
 // return likeEvent matches
 router.post("/", (req, res) => {
+    console.log("Owner name: ")
+    console.log( req.body );
+
+    let OWNERNAME = req.body.username;       
+
+    // find owner's dog document (Assume User only have one dog)
+    const results1 = () =>
+    Dog.findOne({ownerUsername: OWNERNAME }, (error, ownerDog)=> { 
+        console.log( ownerDog )
+        return ownerDog;
+    });
+
+    // get id of owner's dogs 
+    const results2A = (ownerDog) => {
+        const find_params = {
+            dogId : ownerDog._id,
+            sex : ownerDog.sex,
+        }
+        console.log( find_params )
+        return find_params;
+    }
+
+    // find likeEvent where other owners like owner's dogs
+    const results2B = (find_params) => {
+        if (find_params.sex === "Male") {
+            return LikeEvent.find({maleDog: find_params.dogId, maleToFemale: true, femaleToMale: true}, (error, foundLikeEvents)=> {    
+                return foundLikeEvents;
+            })
+        }
+
+        if (find_params.sex === "Female") {
+            return LikeEvent.find({femaleDog: find_params.dogId, maleToFemale: true, femaleToMale: true}, (error, foundLikeEvents)=> {    
+                return foundLikeEvents;
+            })
+        }
+    }
+
+    results1()
+        .then(results2A )
+            .then( (findparams) => results2B(findparams) )
+                .then(  (matchArray) =>{
+                    console.log(matchArray);
+                    res.send(matchArray);
+                })
+    
+});
+
+
+
+
+
+
+
+
+
+router.post("/old", (req, res) => {
     // console.log("Owner ID: ")
     // console.log( req.body );
 
@@ -67,6 +123,25 @@ router.post("/", (req, res) => {
     
 });
 
+
+
+router.post("/match", (req, res) => {
+    LikeEvent.find({ likee: req.body.myDogID }, (err, dogAsLikeeEvents) => {
+      const dogsThatLikeMyDog = dogAsLikeeEvents.map((event) => event.liker);
+      LikeEvent.find(
+        { liker: req.body.myDogID, likee: { $in: dogsThatLikeMyDog } },
+        (err, dogAsLikerEvents) => {
+          const dogsThatILikeToo = dogAsLikerEvents.map((event) => event.likee);
+          Dog.find({ _id: { $in: dogsThatILikeToo } }, (err, matchedDogs) => {
+            res.send(matchedDogs);
+          });
+        }
+      );
+    });
+  });
+
 module.exports = router;
+
+
 
 

@@ -15,6 +15,7 @@ router.get("/", (req, res) => {
 // CREATE
 router.post("/", (req, res) => {
   LikeEvent.create(req.body, (error, createdLikeEvents) => {
+    console.log( req.body );
     if (error) {
       res.status(400).json({ error: error.message });
     }
