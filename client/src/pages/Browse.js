@@ -35,7 +35,7 @@ export default function Browse() {
 
   useEffect(() => {
     const fetchDogs = async () => {
-      const res = await fetch("http://localhost:3003/browse", {
+      const res = await fetch("/browse", {
         method: "POST",
         body: JSON.stringify(postSuggestionsReq),
         headers: {

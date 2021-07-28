@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function NewSessions(props) {
+export default function NewSession(props) {
   const classes = useStyles();
   const [signIn, setSignIn] = useState({
     username: "",
