@@ -6,6 +6,11 @@ const seedUsers = require("../utils/seedUsers");
 
 // SEED
 router.get("/seed", (req, res) => {
+  seedUsers.forEach(
+    (user) =>
+      (user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10)))
+  );
+
   User.create(seedUsers, (err, data) => {
     res.redirect("/users");
   });
