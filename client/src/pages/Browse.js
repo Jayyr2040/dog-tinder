@@ -25,7 +25,6 @@ export default function Browse(props) {
   const [currentDog, setCurrentDog] = useState();
 
   let loggedInDogID = props.currentUserDog?._id;
-  let loggedInDogSex = props.currentUserDog?.sex;
 
   const postSuggestionsReq = {
     userLocation: props.currentUser?.location,
@@ -60,7 +59,6 @@ export default function Browse(props) {
   };
 
   const chooseLike = (likedDog) => {
-    // console.log(likedDog);
     console.log(`Love ${likedDog.name}!`);
     dogCounter === dogSuggestions.length - 1
       ? (dogCounter = 0)

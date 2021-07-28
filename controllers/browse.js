@@ -36,21 +36,4 @@ router.post("/", (req, res) => {
   });
 });
 
-router.post("/match", (req, res) => {
-  LikeEvent.find({ likee: req.body.myDogID }, (err, dogAsLikeeEvents) => {
-    const dogsThatLikeMyDog = dogAsLikeeEvents.map((event) => event.liker);
-    // res.send(dogsThatLikeMyDog);
-    LikeEvent.find(
-      { liker: req.body.myDogID, likee: { $in: dogsThatLikeMyDog } },
-      (err, dogAsLikerEvents) => {
-        const dogsThatILikeToo = dogAsLikerEvents.map((event) => event.likee);
-        // res.send(dogsThatILikeToo);
-        Dog.find({ _id: { $in: dogsThatILikeToo } }, (err, matchedDogs) => {
-          res.send(matchedDogs);
-        });
-      }
-    );
-  });
-});
-
 module.exports = router;
