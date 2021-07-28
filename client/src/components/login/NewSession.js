@@ -42,7 +42,7 @@ export default function NewSession(props) {
         },
       });
       const data = await res.json();
-      console.log("user", data.currentUser);
+      console.log("user", data);
       props.loggedInUserData(data.currentUser);
     };
     createNewLogin();
