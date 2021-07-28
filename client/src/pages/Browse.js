@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import dogData from "./utils/dogData";
 import ShowDog from "../components/browse/ShowDog";
 import Grid from "@material-ui/core/Grid";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -20,20 +19,21 @@ const useStyles = makeStyles((theme) => ({
 
 let dogCounter = 0;
 
-const postSuggestionsReq = {
-  userLocation: ["North"],
-  dogBreed: "Pomeranian",
-  dogSex: "Female",
-};
-
-const loggedInDog = "60fe1f945df2380e9c79b1bc";
-
-export default function Browse() {
+export default function Browse(props) {
   const classes = useStyles();
   const [dogSuggestions, setDogSuggestions] = useState([]);
   const [currentDog, setCurrentDog] = useState();
 
+  let loggedInDog = props.currentUserDog?._id;
+
+  const postSuggestionsReq = {
+    userLocation: props.currentUser?.location,
+    dogBreed: props.currentUserDog?.breed,
+    dogSex: props.currentUserDog?.sex === "Male" ? "Female" : "Male",
+  };
+
   useEffect(() => {
+    console.log(postSuggestionsReq);
     const fetchDogs = async () => {
       const res = await fetch("/browse", {
         method: "POST",
@@ -67,7 +67,7 @@ export default function Browse() {
     setCurrentDog(dogSuggestions[dogCounter]);
 
     const likeDog = async () => {
-      const res = await fetch("http://localhost:3003/likeevents", {
+      const res = await fetch("/likeevents", {
         method: "POST",
         body: JSON.stringify({ liker: loggedInDog, likee: likedDog._id }),
         headers: {

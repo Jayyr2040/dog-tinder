@@ -22,7 +22,7 @@ router.post("/", (req, res) => {
         $and: [
           { breed: req.body.dogBreed },
           { sex: req.body.dogSex },
-          { owner: { $in: ownerUsernames } },
+          { ownerUsername: { $in: ownerUsernames } },
         ],
       },
       (err, foundDogs) => {

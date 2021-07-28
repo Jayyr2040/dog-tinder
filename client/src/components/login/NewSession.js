@@ -42,8 +42,9 @@ export default function NewSession(props) {
         },
       });
       const data = await res.json();
-      console.log("user", data);
-      props.loggedInUserData(data.currentUser);
+      console.log("user", data.currentUser);
+      props.loggedInUserData(data);
+      // props.loggedInDogData(data.currentDog);
     };
     createNewLogin();
   };

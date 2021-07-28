@@ -10,7 +10,6 @@ router.get("/seed", (req, res) => {
     (user) =>
       (user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10)))
   );
-
   User.create(seedUsers, (err, data) => {
     res.redirect("/users");
   });
