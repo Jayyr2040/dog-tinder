@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles, MenuItem } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
@@ -11,6 +11,7 @@ import * as Yup from "yup";
 import Textfield from "./FormsUI/Textfield";
 import { Radio } from "@material-ui/core";
 import { Select } from "@material-ui/core";
+import Button from "./FormsUI/Button";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -38,7 +39,7 @@ const INITIAL_FORM_STATE = {
 const FORM_VALIDATION = Yup.object().shape({
   name: Yup.string().required("Required"),
   breed: Yup.string(),
-  // image: Yup.string(),
+  image: Yup.string(),
   sex: Yup.string().required("Required"),
   yob: Yup.number().min(2000).max(2019),
   description: Yup.string(),
@@ -81,6 +82,26 @@ export default function AddDog(props) {
     fetchImageURL();
   };
 
+  const handleSubmit = () => {
+    const createDog = async () => {
+      try {
+        const res = await fetch("http://localhost:3003/dogs/", {
+          method: "POST",
+          body: JSON.stringify(dogData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data);
+        props.addDog(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createDog();
+  };
+
   return (
     <Container>
       <Grid
@@ -99,7 +120,7 @@ export default function AddDog(props) {
                   ...INITIAL_FORM_STATE,
                 }}
                 validationSchema={FORM_VALIDATION}
-                // onSubmit={(values) => {
+                // onSubmit={handleSubmit}
                 onSubmit={(data, { setSubmitting }) => {
                   setSubmitting(true);
                   console.log("submit: ", data);
@@ -117,31 +138,26 @@ export default function AddDog(props) {
                         alt=""
                       />
                     )}
-                    <Button
+                    {/* <Button
                       variant="contained"
                       component="label"
                       color="secondary"
                       style={{ maxWidth: "180px", maxHeight: "25px" }}
                     >
-                      Upload File
-                      <input
-                        type="file"
-                        name="file"
-                        placeholder="Upload an image"
-                        onChange={uploadImage}
-                        hidden
-                      />
-                    </Button>
+                      Upload File */}
+                    <Field
+                      type="file"
+                      name="image"
+                      placeholder="Upload an image"
+                      onChange={uploadImage}
+                      // hidden
+                    />
+                    {/* </Button> */}
                     <Textfield
                       name="name"
                       label="Name"
                       className={classes.field}
                     />
-                    {/* <Textfield
-                    name="breed"
-                    label="Breed"
-                    className={classes.field}
-                  /> */}
                     <Textfield
                       name="yob"
                       label="Year of Birth"

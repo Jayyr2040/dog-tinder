@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const INITIAL_FORM_STATE = {
-  // image: "",
+  image: "",
   fullName: "",
   description: "",
   location: [],
 };
 
 const FORM_VALIDATION = Yup.object().shape({
-  // image: Yup.string(),
+  image: Yup.string(),
   fullName: Yup.string().required("Required"),
   description: Yup.string().required("Required"),
   location: Yup.array(),
@@ -111,30 +111,30 @@ export default function UpdateProfile(props) {
                   ...INITIAL_FORM_STATE,
                 }}
                 validationSchema={FORM_VALIDATION}
-                onSubmit={handleSubmit}
-              //   onSubmit={(data, { setSubmitting }) => {
-              //     setSubmitting(true);
-              //     console.log("submit: ", data);
-              //     setSubmitting(false);
-              //   }}
+                // onSubmit={handleSubmit}
+                onSubmit={(data, { setSubmitting }) => {
+                  setSubmitting(true);
+                  console.log("submit: ", data);
+                  setSubmitting(false);
+                }}
               >
-             {/* {({ values, errors }) => ( */}
+                {({ values, errors }) => (
                   <Form>
-                    {/* {loading ? (
-                    <CircularProgress />
-                  ) : (
-                    <img
-                      src={uploadedImage}
-                      style={{ height: "280px", width: "280px" }}
-                      alt=""
+                    {loading ? (
+                      <CircularProgress />
+                    ) : (
+                      <img
+                        src={uploadedImage}
+                        style={{ height: "280px", width: "280px" }}
+                        alt=""
+                      />
+                    )}
+                    <Field
+                      name="image"
+                      type="file"
+                      placeholder={uploadedImage}
+                      onChange={uploadImage}
                     />
-                  )}
-                  <input
-                    type="file"
-                    name="file"
-                    placeholder="Upload an image"
-                    onChange={uploadImage}
-                  /> */}
                     <Textfield
                       name="fullName"
                       label="Full Name"
@@ -200,10 +200,10 @@ export default function UpdateProfile(props) {
                       </label>
                     </div>
                     <Button>Submit Form</Button>
-                    {/* <pre>{JSON.stringify(values, null, 2)}</pre>
-                    <pre>{JSON.stringify(errors, null, 2)}</pre> */}
+                    <pre>{JSON.stringify(values, null, 2)}</pre>
+                    <pre>{JSON.stringify(errors, null, 2)}</pre>
                   </Form>
-                {/* )} */}
+                )}
               </Formik>
             </div>
           </Paper>

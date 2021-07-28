@@ -93,7 +93,7 @@ export default function CreateAccount(props) {
                   />
                   <Textfield
                     name="fullName"
-                    label="fullName"
+                    label="Full Name"
                     className={classes.field}
                   />
                   <Textfield
