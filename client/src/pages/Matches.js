@@ -28,6 +28,7 @@ export default function Matches(props) {
       setMatchedList(data);
     };
     fetchMatches();
+    // eslint-disable-next-line
   }, []);
 
   const handleToggle = (inputIndex) => {

@@ -50,6 +50,7 @@ export default function Browse(props) {
       setCurrentDog(data[dogCounter]);
     };
     fetchDogs();
+    // eslint-disable-next-line
   }, []);
 
   const chooseDislike = () => {
