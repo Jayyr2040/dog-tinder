@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import dogData from "./utils/dogData";
 import ShowDog from "../components/browse/ShowDog";
 import Grid from "@material-ui/core/Grid";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -20,20 +19,22 @@ const useStyles = makeStyles((theme) => ({
 
 let dogCounter = 0;
 
-const postSuggestionsReq = {
-  userLocation: ["North"],
-  dogBreed: "Pomeranian",
-  dogSex: "Female",
-};
-
-const loggedInDog = "60fe1f945df2380e9c79b1bc";
-
-export default function Browse() {
+export default function Browse(props) {
   const classes = useStyles();
   const [dogSuggestions, setDogSuggestions] = useState([]);
   const [currentDog, setCurrentDog] = useState();
 
+  let loggedInDogID = props.currentUserDog?._id;
+
+  const postSuggestionsReq = {
+    loggedInDogID: props.currentUserDog?._id,
+    userLocation: props.currentUser?.location,
+    dogBreed: props.currentUserDog?.breed,
+    dogSex: props.currentUserDog?.sex === "Male" ? "Female" : "Male",
+  };
+
   useEffect(() => {
+    console.log(postSuggestionsReq);
     const fetchDogs = async () => {
       const res = await fetch("/browse", {
         method: "POST",
@@ -55,21 +56,19 @@ export default function Browse() {
     dogCounter === dogSuggestions.length - 1
       ? (dogCounter = 0)
       : (dogCounter += 1);
-    setCurrentDog(dogSuggestions[dogCounter]);
+    setCurrentDog(dogSuggestions[dogCounter < 1 ? 0 : dogCounter]);
   };
 
   const chooseLike = (likedDog) => {
-    console.log(likedDog);
     console.log(`Love ${likedDog.name}!`);
-    dogCounter === dogSuggestions.length - 1
-      ? (dogCounter = 0)
-      : (dogCounter += 1);
-    setCurrentDog(dogSuggestions[dogCounter]);
-
+    setDogSuggestions(dogSuggestions.splice(dogCounter, 1));
+    console.log(dogSuggestions);
+    // dogCounter === dogSuggestions.length ? (dogCounter = 0) : (dogCounter += 1);
+    setCurrentDog(dogSuggestions[0]);
     const likeDog = async () => {
-      const res = await fetch("http://localhost:3003/likeevents", {
+      const res = await fetch("/likeevents", {
         method: "POST",
-        body: JSON.stringify({ liker: loggedInDog, likee: likedDog._id }),
+        body: JSON.stringify({ liker: loggedInDogID, likee: likedDog._id }),
         headers: {
           "Content-Type": "application/json",
         },

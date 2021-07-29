@@ -1,75 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MatchRow from "../components/match/MatchRow";
 import MatchDetails from "../components/match/MatchDetails";
 
-const tempDogData = [
-  {
-    name: "Aloha",
-    breed: "Pomeranian",
-    image: "https://i.ibb.co/2h7ckgg/test2.jpg",
-    sex: "Male",
-    yob: 2014,
-    description:
-      "Aloha is loving towards owner and is smart. He knows many basic commands and tricks.",
-    ownerUsername: "",
-  },
-  {
-    name: "Beast",
-    breed: "Dachshund",
-    image: "https://i.ibb.co/wsB9h9L/das1.png",
-    sex: "Female",
-    yob: 2015,
-    description:
-      "Beast is crafty and calm. She is very clean. She is very playful. But she will not eat any food she is given. Her favourite dog food brand is CESAR.",
-    ownerUsername: "",
-  },
-  {
-    name: "Cheeky",
-    breed: "Pomeranian",
-    image: "https://i.ibb.co/RSCspV7/pom1.jpg",
-    sex: "Male",
-    yob: 2016,
-    description:
-      "Cheeky LOVES to roll in mud. He is playful He likes to talk at people. He will eat any food he gets access to. His favourite dog food brand Pedigree.",
-    ownerUsername: "",
-  },
-];
-
-export default function Matches() {
-  const [matchedList, setMatchedList] = useState(tempDogData);
+export default function Matches(props) {
+  const [matchedList, setMatchedList] = useState([]);
   const [selectedDogIndex, setSelectedDogIndex] = useState(-1);
-  // const [ownerDetails, setOwnerDetails] = useState()
+  const [ownerDetails, setOwnerDetails] = useState();
 
   //-> useEffect here to fetch matched dogs
+  useEffect(() => {
+    console.log(`finding matches for ${props.currentUserDog._id}`);
+    const fetchMatches = async () => {
+      const res = await fetch("/matches", {
+        method: "POST",
+        body: JSON.stringify({ myDogID: props.currentUserDog._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log("fetchMatches data", data);
+      setMatchedList(data);
+    };
+    fetchMatches();
+  }, []);
 
   const handleToggle = (inputIndex) => {
     const selectedDog = matchedList[inputIndex];
     console.log(`selected dog is ${selectedDog.name}`);
     setSelectedDogIndex(inputIndex);
-    // -> async function to derive owner data, need to create new state
-    // const fetchOwnerDetails = async () => {
-    //   const res = await fetch("unique route to fetch owner data")
-    //   const ownerData = await res.json()
-    //   console.log(ownerData)
-    //   setOwnerDetails(ownerData)
-    // }
-    // fetchOwnerDetails()
+    // -> async function to derive owner data
+    const fetchOwnerDetails = async () => {
+      const res = await fetch("/users/owner", {
+        method: "POST",
+        body: JSON.stringify({
+          ownerUsername: matchedList[inputIndex].ownerUsername,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const ownerData = await res.json();
+      setOwnerDetails(ownerData);
+      console.log(ownerDetails);
+    };
+    fetchOwnerDetails();
   };
 
   const handleDelete = (inputIndex) => {
-    console.log(`${inputIndex} to be deleted`);
+    console.log(`ID: ${matchedList[inputIndex]._id}`);
     const trashedList = matchedList.filter((_, i) => i !== inputIndex);
     setMatchedList(trashedList);
-    // -> async function to delete likeEvent, LikeEvent.delete({two dogs' id})
-    // const deleteMatch = async () => {
-    //   const res = await fetch("unique route to delete likeEvent")
-    //   const deletedLikeEvent = await res.json()
-    //   console.log(deletedLikeEvent)
-    // }
-    // deleteMatch()
+    //-> delete likeEvent in server too
+    const deleteMatch = async () => {
+      const res = await fetch("/likeevents", {
+        method: "DELETE",
+        body: JSON.stringify({
+          myDogID: props.currentUserDog._id,
+          otherDogID: matchedList[inputIndex]._id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const deletedLikeEvent = await res.json();
+      console.log(deletedLikeEvent);
+    };
+    deleteMatch();
   };
 
   const allMatches = matchedList.map((match, i) => (
@@ -93,7 +93,7 @@ export default function Matches() {
               <MatchDetails
                 matchedList={matchedList}
                 selectedDog={selectedDogIndex}
-                // ownerDetails={ownerDetails}
+                ownerDetails={ownerDetails}
               />
             ) : (
               ""
