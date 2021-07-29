@@ -110,7 +110,7 @@ function App() {
               )}
             </Route>
             <Route path="/settings">
-              {loggedInStatus ? <Settings /> : <Redirect to="/login" />}
+              {loggedInStatus ? <Settings currentUser={currentUser} currentUserDog={currentUserDog} /> : <Redirect to="/login" />}
             </Route>
             <Redirect to="/" />
           </Switch>

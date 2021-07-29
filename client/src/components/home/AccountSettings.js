@@ -11,8 +11,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { Paper } from "@material-ui/core/";
 import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -20,6 +18,9 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import { Image } from "cloudinary-react";
+import Axios from "axios";
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,16 +89,21 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AccountSettings(props) {
+ 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-
+  console.log("settings - currentUser", props?.currentUser);
+  console.log("settings - currentDog", props?.currentUserDog);
+  const currentUser = props?.currentUser;
+  const currentUserDog = props?.currentUserDog;
+  const [changeUserData, setChangeUserData] = React.useState({fullName:currentUser.fullName , image:currentUser.image,email:currentUser.email,location:currentUser.location,description:currentUser.description });
   // checkboxes
   const [state, setState] = React.useState({
-    checkedA: false,
-    checkedB: false,
-    checkedC: false,
-    checkedD: false,
-    checkedE: true,
+    checkedA: currentUser.location.includes("North") ? true : false,
+    checkedB: currentUser.location.includes("South") ? true : false,
+    checkedC: currentUser.location.includes("East") ? true : false,
+    checkedD: currentUser.location.includes("West") ? true : false,
+    checkedE: currentUser.location.includes("Central") ? true : false,
   });
 
   const handleChange = (event, newValue) => {
@@ -106,14 +112,118 @@ export default function AccountSettings(props) {
 
   // checkboxes
   const handleChangeCheck = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+
+   setState({ ...state, [event.target.name]: event.target.checked });
   };
 
   ///// radio buttons
-  const [value1, setValue1] = React.useState("female");
+  const [value1, setValue1] = React.useState();
 
   const handleChangeRadio = (event) => {
     setValue1(event.target.value);
+    console.log(value1);
+  };
+
+  // Upload Userimage
+  const [displayImageUser, setDisplayImageUser] = React.useState(
+    "https://image.flaticon.com/icons/png/512/848/848043.png"
+  );
+  const [uploadImageUser, setUploadImageUser] = React.useState("");
+  const [loadingUser, setLoadingUser] = React.useState(false);
+
+  const uploadUser = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", uploadImageUser);
+    formData.append("upload_preset", "dog_tinder_users");
+    console.log("formData", formData);
+    setLoadingUser(true);
+
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImageUser(response.data.secure_url);
+      //   setLoading(false);
+    });
+  };
+
+  const handleSubmitUser = (e, formValue) => {
+    e.preventDefault();
+    const imageURL = { image: displayImageUser };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
+    const createNewAccount = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3003/users/" + currentUser._id,
+          {
+            method: "PUT",
+            body: JSON.stringify(merge),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        // props.updateProfile();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createNewAccount();
+  };
+
+  // Upload Dogimage
+  const [displayImageDog, setDisplayImageDog] = React.useState(
+    "https://image.flaticon.com/icons/png/512/848/848043.png"
+  );
+  const [uploadImageDog, setUploadImageDog] = React.useState("");
+  const [loadingDog, setLoadingDog] = React.useState(false);
+
+  const uploadDog = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", uploadImageDog);
+    formData.append("upload_preset", "dog_tinder_users");
+    console.log("formData", formData);
+    setLoadingDog(true);
+
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImageDog(response.data.secure_url);
+      //   setLoading(false);
+    });
+  };
+
+  const handleSubmitDog = (e, formValue) => {
+    e.preventDefault();
+    const imageURL = { image: displayImageDog };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
+    const createDog = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3003/dogs/" + currentUserDog._id,
+          {
+            method: "PUT",
+            body: JSON.stringify(merge),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        // props.updateProfile();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createDog();
   };
 
   return (
@@ -134,13 +244,14 @@ export default function AccountSettings(props) {
         <Container maxWidth="lg">
           <Paper elevation={5} className={classes.paper}>
             <Typography variant="h5">User Profile</Typography>
-            <form className={classes.form} noValidate autoComplete="off">
-              <Avatar
-                alt="Julia Jordan"
-                src="https://res.cloudinary.com/dsag331qk/image/upload/v1627457852/dogtinder/users/ftsl1kdbzcypotdwz2gd.jpg"
-                className={classes.avatar}
-              />
-              <div>
+            <form
+              className={classes.form}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmitUser}
+            >
+              {/* <Avatar alt='' src={currentUser.image}  className={classes.avatar}/>
+                <div>
                 <input
                   type="file"
                   name="file"
@@ -149,30 +260,51 @@ export default function AccountSettings(props) {
                   id="icon-button-file"
                 />
                 <label htmlFor="icon-button-file">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="span"
-                  >
-                    <PhotoCamera color="secondary" />
-                  </IconButton>
-                </label>
+                    <IconButton color="primary" aria-label="upload picture" component="span">
+                        <
+                        
+                        color="secondary"/>       
+                    </IconButton>
+                  </label>
+                  </div> */}
+              <div className="image-uploader">
+                {!loadingUser ? (
+                  // <CircularProgress />
+                  <Avatar
+                    alt=""
+                    src={currentUser.image}
+                    className={classes.avatar}
+                  />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImageUser}
+                  />
+                )}
+                <div>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImageUser(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
+                  />
+                </div>
+                <button onClick={uploadUser} class="upload-image-btn">
+                  Upload Image
+                </button>
               </div>
-              <TextField
-                className={classes.field}
-                label="Username"
-                variant="outlined"
-                defaultValue={props.value || "juliajordan"}
-                placeholder={props.value || "juliajordan"}
-                fullWidth
-              />{" "}
-              <br />
+
               <TextField
                 className={classes.field}
                 label="Full Name"
                 variant="outlined"
-                defaultValue={props.value || "Julia Jordan"}
-                placeholder={props.value || "Julia Jordan"}
+
+                defaultValue={currentUser.fullName || ""}
+                placeholder={currentUser.fullName || ""}
+                onChange={(e) => setChangeUserData({...changeUserData, fullName:e.target.value})}
                 fullWidth
               />{" "}
               <br />
@@ -180,31 +312,23 @@ export default function AccountSettings(props) {
                 className={classes.field}
                 label="Email"
                 variant="outlined"
-                defaultValue={props.value || "juliajordan@yahoo.com.sg"}
-                placeholder={props.value || "juliajordan@yahoo.com.sg"}
+
+                defaultValue={currentUser.email || ""}
+                placeholder={currentUser.email || ""}
+                onChange={(e) => setChangeUserData({...changeUserData, email:e.target.value})}
                 fullWidth
               />
               <br />
-              {/*         <TextField
-                className={classes.field}
-                label="Location"
-                variant="outlined"
-                defaultValue = {props.value || 'Central'}
-                placeholder={props.value || 'Central'}
-                fullWidth
-              /> */}
+
               <TextField
                 className={classes.field}
                 label="Description"
                 variant="outlined"
-                defaultValue={
-                  props.value ||
-                  "I am the owner of Jaco who has been my buddy since 2018. My hobbies are working out and bringing Jaco out to his favourite park to play."
-                }
-                placeholder={
-                  props.value ||
-                  "I am the owner of Jaco who has been my buddy since 2018. My hobbies are working out and bringing Jaco out to his favourite park to play."
-                }
+
+                defaultValue={currentUser.description || ""}
+                placeholder={currentUser.description || ""}
+                onChange={(e) => setChangeUserData({...changeUserData, description:e.target.value})}
+
                 fullWidth
                 multiline
                 rows={3}
@@ -214,6 +338,7 @@ export default function AccountSettings(props) {
               <FormControl component="fieldset">
                 <FormLabel className={classes.formlabel}>Location</FormLabel>
                 <FormGroup row>
+
                   <FormControlLabel
                     className={classes.formControlLabel}
                     control={
@@ -234,30 +359,36 @@ export default function AccountSettings(props) {
                       />
                     }
                     label="South"
+
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
+
                         checked={state.checkedC}
                         onChange={handleChangeCheck}
                         name="checkedC"
                       />
                     }
                     label="East"
+
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
+
                         checked={state.checkedD}
                         onChange={handleChangeCheck}
                         name="checkedD"
                       />
                     }
                     label="West"
+
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
+
                         checked={state.checkedE}
                         onChange={handleChangeCheck}
                         name="checkedE"
@@ -285,13 +416,16 @@ export default function AccountSettings(props) {
         <Container>
           <Paper elevation={5} className={classes.paper}>
             <Typography variant="h5">Dog Profile</Typography>
-            <form className={classes.form} noValidate autoComplete="off">
-              <Avatar
-                alt="Jaco"
-                src="https://i.ibb.co/QKL2Kc8/Jaco.jpg"
-                className={classes.avatar}
-              />
-              <div>
+
+            <form
+              className={classes.form}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmitDog}
+            >
+              {/*   <Avatar alt='' src={currentUserDog.image} className={classes.avatar}/>
+                <div>
+
                 <input
                   type="file"
                   name="file"
@@ -300,38 +434,61 @@ export default function AccountSettings(props) {
                   id="icon-button-file"
                 />
                 <label htmlFor="icon-button-file">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="span"
-                  >
-                    <PhotoCamera color="secondary" />
-                  </IconButton>
-                </label>
+
+                    <IconButton color="primary" aria-label="upload picture" component="span">
+                        <PhotoCamera color="secondary"/>       
+                    </IconButton>
+                  </label>
+                  </div> */}
+              <div className="image-uploader">
+                {!loadingDog ? (
+                  // <CircularProgress />
+                  <Avatar
+                    alt=""
+                    src={currentUserDog.image}
+                    className={classes.avatar}
+                  />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImageDog}
+                  />
+                )}
+                <div>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImageDog(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
+                  />
+                </div>
+                <button onClick={uploadDog} class="upload-image-btn">
+                  Upload Image
+                </button>
+
               </div>
               <TextField
                 className={classes.field}
                 label="Name"
                 variant="outlined"
-                defaultValue={props.value || "Jaco"}
-                placeholder={props.value || "Jaco"}
+
+                defaultValue={currentUserDog.name || ""}
+                placeholder={currentUserDog.name || ""}
                 fullWidth
               />{" "}
               <br />
-              {/*  <TextField
-                className={classes.field}
-                label="Sex"
-                variant="outlined"
-                defaultValue = {props.value || 'Female'}
-                placeholder={props.value || 'Female'}
-                fullWidth
-              />{" "} */}
+
               <TextField
                 className={classes.field}
                 label="Year Of Birth"
                 variant="outlined"
-                defaultValue={props.value || "2016"}
-                placeholder={props.value || "2016"}
+
+                defaultValue={currentUserDog.yob || ""}
+                placeholder={currentUserDog.yob || ""}
+
                 fullWidth
                 type="number"
               />{" "}
@@ -340,8 +497,9 @@ export default function AccountSettings(props) {
                 className={classes.field}
                 label="Breed"
                 variant="outlined"
-                defaultValue={props.value || "Pomeranian"}
-                placeholder={props.value || "Pomeranian"}
+                defaultValue={currentUserDog.breed || ""}
+                placeholder={currentUserDog.breed || ""}
+
                 fullWidth
               />
               <br />
@@ -349,14 +507,9 @@ export default function AccountSettings(props) {
                 className={classes.field}
                 label="Description"
                 variant="outlined"
-                defaultValue={
-                  props.value ||
-                  "This calm dog is mean to his owner, but will sometimes come when called. He generally has a mild interest in strangers, and does not mind other animals."
-                }
-                placeholder={
-                  props.value ||
-                  "This calm dog is mean to his owner, but will sometimes come when called. He generally has a mild interest in strangers, and does not mind other animals."
-                }
+                defaultValue={currentUserDog.description || ""}
+                placeholder={currentUserDog.description || ""}
+
                 fullWidth
                 multiline
                 rows={3}
@@ -365,8 +518,9 @@ export default function AccountSettings(props) {
                 className={classes.field}
                 label="Owner"
                 variant="outlined"
-                defaultValue={props.value || "juliajordan"}
-                placeholder={props.value || "juliajordan"}
+                defaultValue={currentUserDog.ownerUsername || ""}
+                placeholder={currentUserDog.ownerUsername || ""}
+
                 fullWidth
               />
               <br />
@@ -377,16 +531,18 @@ export default function AccountSettings(props) {
                   row
                   aria-label="gender"
                   name="gender1"
-                  value={value1}
+                  value={currentUserDog.sex}
                   onChange={handleChangeRadio}
                 >
                   <FormControlLabel
-                    value="female"
+                    value="Female"
+
                     control={<Radio />}
                     label="Female"
                   />
                   <FormControlLabel
-                    value="male"
+                    value="Male"
+
                     control={<Radio />}
                     label="Male"
                   />
@@ -409,24 +565,18 @@ export default function AccountSettings(props) {
       <TabPanel value={value} index={2}>
         <Container>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Edit Account Settings</Typography>
+            <Typography variant="h5">Edit Password</Typography>
             <form className={classes.form} noValidate autoComplete="off">
-              <TextField
-                className={classes.field}
-                label="User Name"
-                variant="outlined"
-                defaultValue={props.value || "juliajordan"}
-                placeholder={props.value || "juliajordan"}
-                fullWidth
-              />{" "}
+
               <br />
               <TextField
                 className={classes.field}
                 label="Password"
                 type="password"
                 variant="outlined"
-                defaultValue={props.value || "12345"}
-                placeholder={props.value || "12345"}
+
+                defaultValue={currentUser.password || ""}
+
                 fullWidth
               />{" "}
               <br />
