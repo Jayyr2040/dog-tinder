@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/";
-import Container from "@material-ui/core/Container";
-import { Grid } from "@material-ui/core/";
-import { Paper } from "@material-ui/core/";
-import { Typography } from "@material-ui/core/";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import Textfield from "./FormsUI/Textfield";
-import Button from "./FormsUI/Button";
+import { Grid, makeStyles, Paper, Typography } from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Container from "@material-ui/core/Container";
 import Axios from "axios";
 import { Image } from "cloudinary-react";
+import { Field, Form, Formik } from "formik";
+import React, { useState } from "react";
+import * as Yup from "yup";
+import Button from "./FormsUI/Button";
+import Textfield from "./FormsUI/Textfield";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -23,7 +20,10 @@ const useStyles = makeStyles((theme) => ({
     padding: 40,
   },
   field: {
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: "center",
+    color: "grey",
   },
 }));
 
@@ -146,7 +146,10 @@ export default function UpdateProfile(props) {
                     multiline={true}
                     rows={4}
                   />
-                  <div className="checkboxes">
+                  <div className={classes.field}>
+                    <Typography variant="body1" color="inherit">
+                      Preferred Location(s):
+                    </Typography>
                     <div className="checkboxes-row-1">
                       <label>
                         <Field

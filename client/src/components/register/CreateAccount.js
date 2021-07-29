@@ -1,14 +1,17 @@
+import {
+  Container,
+  Grid,
+  makeStyles,
+  Paper,
+  Typography,
+} from "@material-ui/core";
+import { Form, Formik } from "formik";
 import React from "react";
-import { makeStyles } from "@material-ui/core";
-import { Container } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import { Typography } from "@material-ui/core";
-import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import Textfield from "./FormsUI/Textfield";
 import Button from "./FormsUI/Button";
-import axios from "axios";
+import Textfield from "./FormsUI/Textfield";
+import { Link as RouterLink } from "react-router-dom";
+// import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -21,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
   field: {
     marginBottom: 20,
+  },
+  signup: {
+    marginTop: theme.spacing(1),
+    textAlign: "center",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -97,7 +106,7 @@ export default function CreateAccount(props) {
         alignItems="center"
       >
         <Grid item xs={12} sm={8} md={6} lg={6}>
-          <Paper elevation={5} className={classes.paper}>
+          <Paper elevation={2} className={classes.paper}>
             <Typography variant="h5" align="center">
               Sign up for account
             </Typography>
@@ -134,6 +143,17 @@ export default function CreateAccount(props) {
                 </Form>
               </Formik>
             </div>
+          </Paper>
+          <Paper className={classes.signup} elevation={2}>
+            <Typography variant="subtitle2">
+              Already have an account?{" "}
+              <RouterLink
+                to="/"
+                style={{ textDecoration: "none", color: "#d4524d" }}
+              >
+                Sign in
+              </RouterLink>
+            </Typography>
           </Paper>
         </Grid>
       </Grid>
