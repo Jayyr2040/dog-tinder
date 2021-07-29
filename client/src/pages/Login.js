@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core";
 import Footer from "../components/home/Footer";
 import { Typography } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
+import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,16 @@ function Login(props) {
   return (
     <div>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={6}></Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <Box display="flex" flexDirection="column">
+            <img
+              src="https://i.ibb.co/J2nqqCc/landingimage.png"
+              width="300px"
+              alt="landing"
+              style={{ alignSelf: "center" }}
+            />
+          </Box>
+        </Grid>
         <Grid item xs={12} sm={6} md={6}>
           <Paper className={classes.root} elevation={2}>
             <NewSession
