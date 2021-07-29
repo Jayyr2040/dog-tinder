@@ -5,22 +5,22 @@ import AddDog from "../components/register/AddDog";
 import "../App.css";
 
 function Register() {
-  const [userId, setUserId] = useState();
+  const [userData, setUserData] = useState();
   const [showCreateAccount, setCreateAccount] = useState(true);
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [showAddDog, setShowAddDog] = useState(false);
 
   const registerNewUser = (data) => {
-    setUserId(data._id);
+    setUserData(data);
     setCreateAccount(false);
     setShowUpdateProfile(true);
-    console.log("registerNewUser,", data._id);
+    console.log("registerNewUser,", data);
   };
 
   const updateProfile = () => {
     setShowUpdateProfile(false);
     setShowAddDog(true);
-    console.log("user", userId, "updated");
+    console.log("user", userData, "updated");
   };
 
   const addDog = (dogData) => {
@@ -36,11 +36,11 @@ function Register() {
         ""
       )}
       {showUpdateProfile ? (
-        <UpdateProfile updateProfile={updateProfile} userId={userId} />
+        <UpdateProfile updateProfile={updateProfile} userData={userData} />
       ) : (
         ""
       )}
-      {showAddDog ? <AddDog addDog={addDog} userId={userId} /> : ""}
+      {showAddDog ? <AddDog addDog={addDog} userData={userData} /> : ""}
     </div>
   );
 }

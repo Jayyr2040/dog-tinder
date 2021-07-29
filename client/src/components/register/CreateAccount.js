@@ -12,8 +12,6 @@ import Button from "./FormsUI/Button";
 import Textfield from "./FormsUI/Textfield";
 import { Link as RouterLink } from "react-router-dom";
 
-
-
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
     marginTop: theme.spacing(5),
@@ -41,37 +39,11 @@ const INITIAL_FORM_STATE = {
   email: "",
 };
 
-// const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-
 const FORM_VALIDATION = Yup.object().shape({
   username: Yup.string().required("Required"),
-  // .test(
-  //   "username-backend-validation",
-  //   "Username is taken",
-  //   async (username) => {
-  //     const {
-  //       data: { success },
-  //     } = await axios.post("http://localhost:3003/register/validUsername", {
-  //       username: username,
-  //     });
-  //     return success;
-  //   }
-  // ),
-  password: Yup.string().required("Required"), // .matches(PASSWORD_REGEX, "Please enter a strong password")
+  password: Yup.string().required("Required"),
   fullName: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email.").required("Required"),
-  // .test(
-  //   "email-backend-validation",
-  //   "Email address is taken",
-  //   async (email) => {
-  //     const {
-  //       data: { success },
-  //     } = await axios.post("http://localhost:3003/register/validEmail", {
-  //       email: email,
-  //     });
-  //     return success;
-  //   }
-  // ),
 });
 
 export default function CreateAccount(props) {
@@ -128,6 +100,7 @@ export default function CreateAccount(props) {
                   <Textfield
                     name="password"
                     label="Password"
+                    type="password"
                     className={classes.field}
                   />
                   <Textfield

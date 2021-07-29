@@ -77,7 +77,8 @@ export default function AddDog(props) {
 
   const handleSubmit = (formValue) => {
     const imageURL = { image: displayImage };
-    let merge = { ...formValue, ...imageURL };
+    const ownerUsername = { ownerUsername: props.userData.username };
+    let merge = { ...formValue, ...imageURL, ...ownerUsername };
     console.log(merge);
     const createDog = async () => {
       try {

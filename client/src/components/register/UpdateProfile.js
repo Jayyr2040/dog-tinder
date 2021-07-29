@@ -70,13 +70,16 @@ export default function UpdateProfile(props) {
     console.log(merge);
     const createNewAccount = async () => {
       try {
-        const res = await fetch("http://localhost:3003/users/" + props.userId, {
-          method: "PUT",
-          body: JSON.stringify(merge),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const res = await fetch(
+          "http://localhost:3003/users/" + props.userData._id,
+          {
+            method: "PUT",
+            body: JSON.stringify(merge),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const data = await res.json();
         props.updateProfile();
         console.log(data);

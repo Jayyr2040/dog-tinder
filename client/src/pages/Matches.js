@@ -14,7 +14,6 @@ export default function Matches(props) {
 
   //-> useEffect here to fetch matched dogs
   useEffect(() => {
-    console.log(`finding matches for ${props.currentUserDog._id}`);
     const fetchMatches = async () => {
       const res = await fetch("/matches", {
         method: "POST",
