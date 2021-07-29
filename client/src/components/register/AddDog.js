@@ -40,7 +40,7 @@ const FORM_VALIDATION = Yup.object().shape({
   name: Yup.string().required("Required"),
   breed: Yup.string(),
   sex: Yup.string().required("Required"),
-  yob: Yup.number().min(2000).max(2019),
+  yob: Yup.number().min(2010).max(2019),
   description: Yup.string(),
 });
 
