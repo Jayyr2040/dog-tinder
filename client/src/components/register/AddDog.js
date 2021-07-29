@@ -20,16 +20,14 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(8),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   paper: {
-    margin: theme.spacing(1),
-    padding: 40,
+    padding: 35,
   },
   field: {
     marginTop: 10,
-    marginBottom: 10,
     textAlign: "center",
     color: "grey",
   },
@@ -55,7 +53,7 @@ export default function AddDog(props) {
   const classes = useStyles();
   const history = useHistory();
   const [displayImage, setDisplayImage] = useState(
-    "https://image.flaticon.com/icons/png/512/1581/1581594.png"
+    "https://i.ibb.co/t8dfPCM/pawprint.png"
   );
   const [uploadImage, setUploadImage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -82,7 +80,7 @@ export default function AddDog(props) {
     console.log(merge);
     const createDog = async () => {
       try {
-        const res = await fetch("http://localhost:3003/dogs/", {
+        const res = await fetch("/dogs/", {
           method: "POST",
           body: JSON.stringify(merge),
           headers: {
@@ -110,9 +108,20 @@ export default function AddDog(props) {
         alignItems="center"
       >
         <Grid item xs={12} sm={8} md={6} lg={6}>
-          <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5" align="center">
-              Sign up for account
+          <Paper className={classes.paper}>
+            <Grid container justify="center">
+              <img
+                src="https://i.ibb.co/KjSLSwS/logo.png"
+                height="60"
+                alt="logo"
+              />
+            </Grid>
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ color: "grey", marginTop: 10, marginBottom: 20 }}
+            >
+              Tell us more about your lovely doggo
             </Typography>
             <div className={classes.formWrapper}>
               <div className="image-uploader">
@@ -121,7 +130,7 @@ export default function AddDog(props) {
                 ) : (
                   <Image
                     cloudName="dsag331qk"
-                    style={{ height: "280px", width: "280px" }}
+                    style={{ maxWidth: "280px" }}
                     publicId={displayImage}
                   />
                 )}

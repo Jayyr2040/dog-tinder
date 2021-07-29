@@ -14,21 +14,28 @@ import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(8),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(3),
   },
   paper: {
-    margin: theme.spacing(1),
-    padding: 40,
+    padding: 35,
   },
   field: {
-    marginBottom: 20,
+    marginTop: 10,
   },
   signup: {
     marginTop: theme.spacing(1),
     textAlign: "center",
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
+  },
+  form: {
+    marginTop: 20,
+  },
+  disclaimer: {
+    marginTop: 40,
+    textAlign: "center",
+    color: "grey",
   },
 }));
 
@@ -52,7 +59,7 @@ export default function CreateAccount(props) {
   const handleSubmit = (formValue) => {
     const createNewAccount = async () => {
       try {
-        const res = await fetch("http://localhost:3003/users", {
+        const res = await fetch("/users", {
           method: "POST",
           body: JSON.stringify(formValue),
           headers: {
@@ -79,9 +86,20 @@ export default function CreateAccount(props) {
         alignItems="center"
       >
         <Grid item xs={12} sm={8} md={6} lg={6}>
-          <Paper elevation={2} className={classes.paper}>
-            <Typography variant="h5" align="center">
-              Sign up for account
+          <Paper className={classes.paper}>
+            <Grid container justify="center">
+              <img
+                src="https://i.ibb.co/KjSLSwS/logo.png"
+                height="60"
+                alt="logo"
+              />
+            </Grid>
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ color: "grey", marginTop: 20 }}
+            >
+              Sign up to find a mate for your lovely doggos
             </Typography>
             <div className={classes.formWrapper}>
               <Formik
@@ -91,7 +109,7 @@ export default function CreateAccount(props) {
                 validationSchema={FORM_VALIDATION}
                 onSubmit={handleSubmit}
               >
-                <Form>
+                <Form className={classes.form}>
                   <Textfield
                     name="username"
                     label="Username"
@@ -113,7 +131,19 @@ export default function CreateAccount(props) {
                     label="Email"
                     className={classes.field}
                   />
-                  <Button>Submit Form</Button>
+                  <div className={classes.form}>
+                    <Button>
+                      <Typography style={{ fontWeight: 700 }}>
+                        Submit Form
+                      </Typography>
+                    </Button>
+                  </div>
+                  <div className={classes.disclaimer}>
+                    <Typography variant="caption">
+                      By signing up, you agree to our Terms , Data Policy and
+                      Cookies Policy .
+                    </Typography>
+                  </div>
                 </Form>
               </Formik>
             </div>

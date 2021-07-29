@@ -21,7 +21,6 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { Image } from "cloudinary-react";
 import Axios from "axios";
 
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -87,16 +86,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function AccountSettings(props) {
- 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   console.log("settings - currentUser", props?.currentUser);
   console.log("settings - currentDog", props?.currentUserDog);
   const currentUser = props?.currentUser;
   const currentUserDog = props?.currentUserDog;
-  const [changeUserData, setChangeUserData] = React.useState({fullName:currentUser.fullName , image:currentUser.image,email:currentUser.email,location:currentUser.location,description:currentUser.description });
+  const [changeUserData, setChangeUserData] = React.useState({
+    fullName: currentUser.fullName,
+    image: currentUser.image,
+    email: currentUser.email,
+    location: currentUser.location,
+    description: currentUser.description,
+  });
   // checkboxes
   const [state, setState] = React.useState({
     checkedA: currentUser.location.includes("North") ? true : false,
@@ -112,8 +115,7 @@ export default function AccountSettings(props) {
 
   // checkboxes
   const handleChangeCheck = (event) => {
-
-   setState({ ...state, [event.target.name]: event.target.checked });
+    setState({ ...state, [event.target.name]: event.target.checked });
   };
 
   ///// radio buttons
@@ -155,16 +157,13 @@ export default function AccountSettings(props) {
     console.log(merge);
     const createNewAccount = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:3003/users/" + currentUser._id,
-          {
-            method: "PUT",
-            body: JSON.stringify(merge),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch("/users/" + currentUser._id, {
+          method: "PUT",
+          body: JSON.stringify(merge),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
         // props.updateProfile();
         console.log(data);
@@ -206,16 +205,13 @@ export default function AccountSettings(props) {
     console.log(merge);
     const createDog = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:3003/dogs/" + currentUserDog._id,
-          {
-            method: "PUT",
-            body: JSON.stringify(merge),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch("/dogs/" + currentUserDog._id, {
+          method: "PUT",
+          body: JSON.stringify(merge),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
         // props.updateProfile();
         console.log(data);
@@ -296,15 +292,18 @@ export default function AccountSettings(props) {
                   Upload Image
                 </button>
               </div>
-
               <TextField
                 className={classes.field}
                 label="Full Name"
                 variant="outlined"
-
                 defaultValue={currentUser.fullName || ""}
                 placeholder={currentUser.fullName || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, fullName:e.target.value})}
+                onChange={(e) =>
+                  setChangeUserData({
+                    ...changeUserData,
+                    fullName: e.target.value,
+                  })
+                }
                 fullWidth
               />{" "}
               <br />
@@ -312,23 +311,29 @@ export default function AccountSettings(props) {
                 className={classes.field}
                 label="Email"
                 variant="outlined"
-
                 defaultValue={currentUser.email || ""}
                 placeholder={currentUser.email || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, email:e.target.value})}
+                onChange={(e) =>
+                  setChangeUserData({
+                    ...changeUserData,
+                    email: e.target.value,
+                  })
+                }
                 fullWidth
               />
               <br />
-
               <TextField
                 className={classes.field}
                 label="Description"
                 variant="outlined"
-
                 defaultValue={currentUser.description || ""}
                 placeholder={currentUser.description || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, description:e.target.value})}
-
+                onChange={(e) =>
+                  setChangeUserData({
+                    ...changeUserData,
+                    description: e.target.value,
+                  })
+                }
                 fullWidth
                 multiline
                 rows={3}
@@ -338,7 +343,6 @@ export default function AccountSettings(props) {
               <FormControl component="fieldset">
                 <FormLabel className={classes.formlabel}>Location</FormLabel>
                 <FormGroup row>
-
                   <FormControlLabel
                     className={classes.formControlLabel}
                     control={
@@ -359,36 +363,30 @@ export default function AccountSettings(props) {
                       />
                     }
                     label="South"
-
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-
                         checked={state.checkedC}
                         onChange={handleChangeCheck}
                         name="checkedC"
                       />
                     }
                     label="East"
-
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-
                         checked={state.checkedD}
                         onChange={handleChangeCheck}
                         name="checkedD"
                       />
                     }
                     label="West"
-
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-
                         checked={state.checkedE}
                         onChange={handleChangeCheck}
                         name="checkedE"
@@ -468,27 +466,22 @@ export default function AccountSettings(props) {
                 <button onClick={uploadDog} class="upload-image-btn">
                   Upload Image
                 </button>
-
               </div>
               <TextField
                 className={classes.field}
                 label="Name"
                 variant="outlined"
-
                 defaultValue={currentUserDog.name || ""}
                 placeholder={currentUserDog.name || ""}
                 fullWidth
               />{" "}
               <br />
-
               <TextField
                 className={classes.field}
                 label="Year Of Birth"
                 variant="outlined"
-
                 defaultValue={currentUserDog.yob || ""}
                 placeholder={currentUserDog.yob || ""}
-
                 fullWidth
                 type="number"
               />{" "}
@@ -499,7 +492,6 @@ export default function AccountSettings(props) {
                 variant="outlined"
                 defaultValue={currentUserDog.breed || ""}
                 placeholder={currentUserDog.breed || ""}
-
                 fullWidth
               />
               <br />
@@ -509,7 +501,6 @@ export default function AccountSettings(props) {
                 variant="outlined"
                 defaultValue={currentUserDog.description || ""}
                 placeholder={currentUserDog.description || ""}
-
                 fullWidth
                 multiline
                 rows={3}
@@ -520,7 +511,6 @@ export default function AccountSettings(props) {
                 variant="outlined"
                 defaultValue={currentUserDog.ownerUsername || ""}
                 placeholder={currentUserDog.ownerUsername || ""}
-
                 fullWidth
               />
               <br />
@@ -536,13 +526,11 @@ export default function AccountSettings(props) {
                 >
                   <FormControlLabel
                     value="Female"
-
                     control={<Radio />}
                     label="Female"
                   />
                   <FormControlLabel
                     value="Male"
-
                     control={<Radio />}
                     label="Male"
                   />
@@ -567,16 +555,13 @@ export default function AccountSettings(props) {
           <Paper elevation={5} className={classes.paper}>
             <Typography variant="h5">Edit Password</Typography>
             <form className={classes.form} noValidate autoComplete="off">
-
               <br />
               <TextField
                 className={classes.field}
                 label="Password"
                 type="password"
                 variant="outlined"
-
                 defaultValue={currentUser.password || ""}
-
                 fullWidth
               />{" "}
               <br />
