@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import ShowDog from "../components/browse/ShowDog";
 import Grid from "@material-ui/core/Grid";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ClearIcon from "@material-ui/icons/Clear";
 import Fab from "@material-ui/core/Fab";
 import { makeStyles } from "@material-ui/core/styles";
-import { Fade } from "@material-ui/core";
+import { Button, Typography, Box } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -100,7 +101,19 @@ export default function Browse(props) {
               chooseLike={chooseLike}
             />
           ) : (
-            "Looks like you've liked all the dogs in your area."
+            <div>
+              <Typography align="center">
+                Looks like you've liked all the dogs in your area.
+              </Typography>
+              <br />
+              <Box display="flex" justifyContent="center">
+                <RouterLink to="/matches" style={{ textDecoration: "none" }}>
+                  <Button color="secondary" variant="contained">
+                    See matches
+                  </Button>
+                </RouterLink>
+              </Box>
+            </div>
           )}
         </Grid>
         <Grid item md={12}>
