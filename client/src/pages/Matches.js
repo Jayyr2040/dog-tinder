@@ -86,10 +86,12 @@ export default function Matches(props) {
       <Box pt={3}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={5} md={6}>
-            {allMatches}
+            {matchedList.length > 0
+              ? allMatches
+              : `Looks like ${props.currentUserDog?.name} no matches yet.`}
           </Grid>
           <Grid item xs={12} sm={7} md={6}>
-            {selectedDogIndex >= 0 ? (
+            {selectedDogIndex >= 0 && matchedList.length > 0 ? (
               <MatchDetails
                 matchedList={matchedList}
                 selectedDog={selectedDogIndex}
