@@ -62,6 +62,7 @@ const browseController = require("./controllers/browse");
 const matchesController = require("./controllers/matches.js");
 const sessionsController = require("./controllers/sessions.js");
 const likeEventsMatchController = require("./controllers/likeEventsMatch.js");
+const registerController = require("./controllers/Register.js");
 
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
@@ -69,11 +70,8 @@ app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
 app.use("/matches", matchesController);
 app.use("/sessions", sessionsController);
-<<<<<<< HEAD
 app.use("/likematch", likeEventsMatchController);
-=======
 app.use("/register", registerController);
->>>>>>> 1abf541603aecf3088748d65b90b306185745588
 
 app.listen(PORT, () => {
   console.log("Dog matching 🐶 happening on port", PORT);
