@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: "50px",
+    paddingTop: "30px",
     display: "flex",
     flexWrap: "wrap",
     "& > *": {
@@ -36,7 +36,7 @@ export default function ShowDog(props) {
             </Typography>
             <Typography variant="subtitle2" style={{ fontWeight: 700 }}>
               {props.currentDog?.breed}{" "}
-              {props.currentDog?.sex === "F" ? "♀" : "♂"}
+              {props.currentDog?.sex === "Female" ? "♀" : "♂"}
             </Typography>
             <br />
             <Typography variant="body2">

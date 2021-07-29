@@ -20,6 +20,7 @@ const useStyles = makeStyles({
   },
   footer: {
     marginTop: 40,
+    paddingBottom: 40,
   },
 });
 
@@ -43,7 +44,8 @@ export default function NewSession(props) {
       });
       const data = await res.json();
       console.log("user", data.currentUser);
-      props.loggedInUserData(data.currentUser);
+      props.loggedInUserData(data);
+      // props.loggedInDogData(data.currentDog);
     };
     createNewLogin();
   };

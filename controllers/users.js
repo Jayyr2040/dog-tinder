@@ -6,6 +6,10 @@ const seedUsers = require("../utils/seedUsers");
 
 // SEED
 router.get("/seed", (req, res) => {
+  seedUsers.forEach(
+    (user) =>
+      (user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10)))
+  );
   User.create(seedUsers, (err, data) => {
     res.redirect("/users");
   });
@@ -71,6 +75,13 @@ router.get("/:id", (req, res) => {
   User.findById(req.params.id, (error, foundUser) => {
     console.log(foundUser);
     res.send(foundUser);
+  });
+});
+
+// OWNER DETAILS
+router.post("/owner", (req, res) => {
+  User.find({ username: req.body.ownerUsername }, (error, ownerDetails) => {
+    res.send(ownerDetails);
   });
 });
 

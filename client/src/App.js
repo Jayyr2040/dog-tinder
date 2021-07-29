@@ -9,6 +9,7 @@ import NavBar from "./components/home/NavBar";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
 import "./App.css";
+import Settings from "./pages/Settings";
 
 const theme = createMuiTheme({
   palette: {
@@ -37,7 +38,9 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState();
+  const [currentUserDog, setCurrentUserDog] = useState();
   const [loggedInStatus, setLoggedInStatus] = useState(false);
+
   useEffect(() => {
     const fetchSession = async () => {
       const res = await fetch("/sessions/check", {
@@ -58,9 +61,10 @@ function App() {
     fetchSession();
   }, []);
 
-  const loggedInUserData = (userData) => {
-    console.log("loggedInUserData", userData);
-    setCurrentUser(userData);
+  const loggedInUserData = (fullData) => {
+    console.log("loggedInUserData", fullData);
+    setCurrentUser(fullData.currentUser);
+    setCurrentUserDog(fullData.currentDog);
     setLoggedInStatus(true);
   };
 
@@ -86,10 +90,27 @@ function App() {
               {loggedInStatus && <Redirect to="/browse" />}
             </Route>
             <Route path="/browse">
-              {loggedInStatus ? <Browse /> : <Redirect to="/login" />}
+              {loggedInStatus ? (
+                <Browse
+                  currentUser={currentUser}
+                  currentUserDog={currentUserDog}
+                />
+              ) : (
+                <Redirect to="/login" />
+              )}
             </Route>
             <Route path="/matches">
-              {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
+              {loggedInStatus ? (
+                <Matches
+                  currentUser={currentUser}
+                  currentUserDog={currentUserDog}
+                />
+              ) : (
+                <Redirect to="/login" />
+              )}
+            </Route>
+            <Route path="/settings">
+              {loggedInStatus ? <Settings currentUser={currentUser} currentUserDog={currentUserDog} /> : <Redirect to="/login" />}
             </Route>
             <Redirect to="/" />
           </Switch>
