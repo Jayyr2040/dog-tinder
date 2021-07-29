@@ -40,6 +40,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState();
   const [currentUserDog, setCurrentUserDog] = useState();
   const [loggedInStatus, setLoggedInStatus] = useState(false);
+
   useEffect(() => {
     const fetchSession = async () => {
       const res = await fetch("/sessions/check", {
