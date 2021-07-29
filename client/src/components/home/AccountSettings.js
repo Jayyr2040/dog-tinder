@@ -1,25 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-
-import Container from "@material-ui/core/Container";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import { MenuItem, Select } from "@material-ui/core";
 import { Paper } from "@material-ui/core/";
-import Avatar from "@material-ui/core/Avatar";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Box from "@material-ui/core/Box";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import { Image } from "cloudinary-react";
+import { makeStyles } from "@material-ui/core/styles";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
+import { Image } from "cloudinary-react";
+import { Field, Form, Formik } from "formik";
+import PropTypes from "prop-types";
+import React from "react";
+import * as Yup from "yup";
+import Button from "../register/FormsUI/Button";
+import Textfield from "../register/FormsUI/Textfield";
 
 
 function TabPanel(props) {
@@ -87,49 +84,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const USER_FORM_VALIDATION = Yup.object().shape({
+  fullName: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+  location: Yup.array(),
+});
+
+const DOG_FORM_VALIDATION = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  breed: Yup.string(),
+  sex: Yup.string().required("Required"),
+  yob: Yup.number().min(2010).max(2019),
+  description: Yup.string(),
+});
+
+const ACCOUNT_FORM_VALIDATION = Yup.object().shape({
+  password: Yup.string().required("Required"),
+});
 
 export default function AccountSettings(props) {
- 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   console.log("settings - currentUser", props?.currentUser);
   console.log("settings - currentDog", props?.currentUserDog);
   const currentUser = props?.currentUser;
   const currentUserDog = props?.currentUserDog;
-  const [changeUserData, setChangeUserData] = React.useState({fullName:currentUser.fullName , image:currentUser.image,email:currentUser.email,location:currentUser.location,description:currentUser.description });
-  // checkboxes
-  const [state, setState] = React.useState({
-    checkedA: currentUser.location.includes("North") ? true : false,
-    checkedB: currentUser.location.includes("South") ? true : false,
-    checkedC: currentUser.location.includes("East") ? true : false,
-    checkedD: currentUser.location.includes("West") ? true : false,
-    checkedE: currentUser.location.includes("Central") ? true : false,
-  });
+
+  const INITIAL_USER_FORM_STATE = {
+    fullName: currentUser.fullName,
+    description: currentUser.description,
+    location: currentUser.location,
+  };
+
+  const INITIAL_DOG_FORM_STATE = {
+    name: currentUserDog.name,
+    breed: currentUserDog.breed,
+    sex: currentUserDog.sex,
+    yob: currentUserDog.yob,
+    description: currentUserDog.description,
+  };
+
+  const INITIAL_ACCOUNT_FORM_STATE = {
+    password: ''
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  // checkboxes
-  const handleChangeCheck = (event) => {
-
-   setState({ ...state, [event.target.name]: event.target.checked });
-  };
-
-  ///// radio buttons
-  const [value1, setValue1] = React.useState();
-
-  const handleChangeRadio = (event) => {
-    setValue1(event.target.value);
-    console.log(value1);
-  };
-
   // Upload Userimage
   const [displayImageUser, setDisplayImageUser] = React.useState(
-    "https://image.flaticon.com/icons/png/512/848/848043.png"
+    currentUser.image
   );
   const [uploadImageUser, setUploadImageUser] = React.useState("");
-  const [loadingUser, setLoadingUser] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const uploadUser = (e) => {
     e.preventDefault();
@@ -137,26 +145,25 @@ export default function AccountSettings(props) {
     formData.append("file", uploadImageUser);
     formData.append("upload_preset", "dog_tinder_users");
     console.log("formData", formData);
-    setLoadingUser(true);
+    setLoading(true);
 
     Axios.post(
       "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
       formData
     ).then((response) => {
       setDisplayImageUser(response.data.secure_url);
-      //   setLoading(false);
+      setLoading(false);
     });
   };
 
-  const handleSubmitUser = (e, formValue) => {
-    e.preventDefault();
-    const imageURL = { image: displayImageUser };
-    let merge = { ...formValue, ...imageURL };
+  const handleSubmitUser = (formValue) => {
+    const userImageURL = { image: displayImageUser };
+    let merge = { ...formValue, ...userImageURL };
     console.log(merge);
     const createNewAccount = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3003/users/" + currentUser._id,
+          "/users/" + currentUser._id,
           {
             method: "PUT",
             body: JSON.stringify(merge),
@@ -166,8 +173,8 @@ export default function AccountSettings(props) {
           }
         );
         const data = await res.json();
-        // props.updateProfile();
         console.log(data);
+        alert("User profile updated succesfully!");
       } catch (error) {
         console.log(error);
       }
@@ -177,7 +184,7 @@ export default function AccountSettings(props) {
 
   // Upload Dogimage
   const [displayImageDog, setDisplayImageDog] = React.useState(
-    "https://image.flaticon.com/icons/png/512/848/848043.png"
+    currentUserDog.image
   );
   const [uploadImageDog, setUploadImageDog] = React.useState("");
   const [loadingDog, setLoadingDog] = React.useState(false);
@@ -195,19 +202,18 @@ export default function AccountSettings(props) {
       formData
     ).then((response) => {
       setDisplayImageDog(response.data.secure_url);
-      //   setLoading(false);
+      setLoadingDog(false);
     });
   };
 
-  const handleSubmitDog = (e, formValue) => {
-    e.preventDefault();
+  const handleSubmitDog = (formValue) => {
     const imageURL = { image: displayImageDog };
     let merge = { ...formValue, ...imageURL };
     console.log(merge);
     const createDog = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3003/dogs/" + currentUserDog._id,
+          "/dogs/" + currentUserDog._id,
           {
             method: "PUT",
             body: JSON.stringify(merge),
@@ -217,8 +223,8 @@ export default function AccountSettings(props) {
           }
         );
         const data = await res.json();
-        // props.updateProfile();
         console.log(data);
+        alert("Dog profile updated succesfully!");
       } catch (error) {
         console.log(error);
       }
@@ -226,6 +232,28 @@ export default function AccountSettings(props) {
     createDog();
   };
 
+  const handleSubmitPassword = (formValue) => {
+    const createPassword = async () => {
+      try {
+        const res = await fetch(
+          "/users/" + currentUser._id,
+          {
+            method: "PUT",
+            body: JSON.stringify(formValue),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        console.log(data);
+        alert("Password updated succesfully!");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createPassword();
+  };
   return (
     <div className={classes.root}>
       <Tabs
@@ -243,211 +271,124 @@ export default function AccountSettings(props) {
       <TabPanel value={value} index={0}>
         <Container maxWidth="lg">
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">User Profile</Typography>
-            <form
-              className={classes.form}
-              noValidate
-              autoComplete="off"
+            <Typography variant="h5" gutterBottom>User Profile</Typography>
+            <div className="image-uploader">
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Image
+                  cloudName="dsag331qk"
+                  style={{ height: "280px", width: "280px" }}
+                  publicId={displayImageUser}
+                />
+              )}
+              <div>
+                <input
+                  name="image"
+                  type="file"
+                  onChange={(e) => {
+                    setUploadImageUser(e.target.files[0]);
+                  }}
+                  accept=".jpg,.jpeg,.gif,.png"
+                />
+              </div>
+              <button onClick={uploadUser} class="upload-image-btn">
+                Upload Image
+              </button>
+            </div>
+            <Formik
+              initialValues={{
+                ...INITIAL_USER_FORM_STATE,
+              }}
+              validationSchema={USER_FORM_VALIDATION}
               onSubmit={handleSubmitUser}
             >
-              {/* <Avatar alt='' src={currentUser.image}  className={classes.avatar}/>
-                <div>
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload an image"
-                  hidden
-                  id="icon-button-file"
+              <Form>
+                <Textfield
+                  name="fullName"
+                  label="Full Name"
+                  className={classes.field}
                 />
-                <label htmlFor="icon-button-file">
-                    <IconButton color="primary" aria-label="upload picture" component="span">
-                        <
-                        
-                        color="secondary"/>       
-                    </IconButton>
-                  </label>
-                  </div> */}
-              <div className="image-uploader">
-                {!loadingUser ? (
-                  // <CircularProgress />
-                  <Avatar
-                    alt=""
-                    src={currentUser.image}
-                    className={classes.avatar}
-                  />
-                ) : (
-                  <Image
-                    cloudName="dsag331qk"
-                    style={{ height: "280px", width: "280px" }}
-                    publicId={displayImageUser}
-                  />
-                )}
-                <div>
-                  <input
-                    name="image"
-                    type="file"
-                    onChange={(e) => {
-                      setUploadImageUser(e.target.files[0]);
-                    }}
-                    accept=".jpg,.jpeg,.gif,.png"
-                  />
+                <Textfield
+                  name="description"
+                  label="Description"
+                  className={classes.field}
+                  multiline={true}
+                  rows={4}
+                />
+                <div className={classes.field}>
+                  <Typography variant="body1" color="inherit">
+                    Preferred Location(s):
+                  </Typography>
+                  <div className="checkboxes-row-1">
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="North"
+                        value="North"
+                        as={Checkbox}
+                      />
+                      North
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="South"
+                        value="South"
+                        as={Checkbox}
+                      />
+                      South
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="East"
+                        value="East"
+                        as={Checkbox}
+                      />
+                      East
+                    </label>
+                  </div>
+                  <div className="checkboxes-row-2">
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="West"
+                        value="West"
+                        as={Checkbox}
+                      />
+                      West
+                    </label>
+                    <label>
+                      <Field
+                        name="location"
+                        type="checkbox"
+                        placeholder="Central"
+                        value="Central"
+                        as={Checkbox}
+                      />
+                      Central
+                    </label>
+                  </div>
                 </div>
-                <button onClick={uploadUser} class="upload-image-btn">
-                  Upload Image
-                </button>
-              </div>
-
-              <TextField
-                className={classes.field}
-                label="Full Name"
-                variant="outlined"
-
-                defaultValue={currentUser.fullName || ""}
-                placeholder={currentUser.fullName || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, fullName:e.target.value})}
-                fullWidth
-              />{" "}
-              <br />
-              <TextField
-                className={classes.field}
-                label="Email"
-                variant="outlined"
-
-                defaultValue={currentUser.email || ""}
-                placeholder={currentUser.email || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, email:e.target.value})}
-                fullWidth
-              />
-              <br />
-
-              <TextField
-                className={classes.field}
-                label="Description"
-                variant="outlined"
-
-                defaultValue={currentUser.description || ""}
-                placeholder={currentUser.description || ""}
-                onChange={(e) => setChangeUserData({...changeUserData, description:e.target.value})}
-
-                fullWidth
-                multiline
-                rows={3}
-              />
-              <br />
-              <br />
-              <FormControl component="fieldset">
-                <FormLabel className={classes.formlabel}>Location</FormLabel>
-                <FormGroup row>
-
-                  <FormControlLabel
-                    className={classes.formControlLabel}
-                    control={
-                      <Checkbox
-                        checked={state.checkedA}
-                        onChange={handleChangeCheck}
-                        name="checkedA"
-                      />
-                    }
-                    label="North"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={state.checkedB}
-                        onChange={handleChangeCheck}
-                        name="checkedB"
-                      />
-                    }
-                    label="South"
-
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-
-                        checked={state.checkedC}
-                        onChange={handleChangeCheck}
-                        name="checkedC"
-                      />
-                    }
-                    label="East"
-
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-
-                        checked={state.checkedD}
-                        onChange={handleChangeCheck}
-                        name="checkedD"
-                      />
-                    }
-                    label="West"
-
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-
-                        checked={state.checkedE}
-                        onChange={handleChangeCheck}
-                        name="checkedE"
-                      />
-                    }
-                    label="Central"
-                  />
-                </FormGroup>
-              </FormControl>
-              <br />
-              <Button
-                type="submit"
-                className={classes.field}
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Update profile
-              </Button>
-            </form>
+                <Button>Update</Button>
+              </Form>
+            </Formik>
+            <br />
           </Paper>
         </Container>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Container>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Dog Profile</Typography>
-
-            <form
-              className={classes.form}
-              noValidate
-              autoComplete="off"
-              onSubmit={handleSubmitDog}
-            >
-              {/*   <Avatar alt='' src={currentUserDog.image} className={classes.avatar}/>
-                <div>
-
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload an image"
-                  hidden
-                  id="icon-button-file"
-                />
-                <label htmlFor="icon-button-file">
-
-                    <IconButton color="primary" aria-label="upload picture" component="span">
-                        <PhotoCamera color="secondary"/>       
-                    </IconButton>
-                  </label>
-                  </div> */}
-              <div className="image-uploader">
-                {!loadingDog ? (
-                  // <CircularProgress />
-                  <Avatar
-                    alt=""
-                    src={currentUserDog.image}
-                    className={classes.avatar}
-                  />
+            <Typography variant="h5" gutterBottom>Dog Profile</Typography>
+               <div className="image-uploader">
+                {loadingDog ? (
+                  <CircularProgress />
                 ) : (
                   <Image
                     cloudName="dsag331qk"
@@ -456,140 +397,98 @@ export default function AccountSettings(props) {
                   />
                 )}
                 <div>
-                  <input
-                    name="image"
-                    type="file"
-                    onChange={(e) => {
-                      setUploadImageDog(e.target.files[0]);
-                    }}
-                    accept=".jpg,.jpeg,.gif,.png"
-                  />
+                <input
+                  name="image"
+                  type="file"
+                  onChange={(e) => {
+                    setUploadImageDog(e.target.files[0]);
+                  }}
+                  accept=".jpg,.jpeg,.gif,.png"
+                />
                 </div>
+              </div>
+              <div className="image-uploader">
                 <button onClick={uploadDog} class="upload-image-btn">
                   Upload Image
                 </button>
-
               </div>
-              <TextField
-                className={classes.field}
-                label="Name"
-                variant="outlined"
-
-                defaultValue={currentUserDog.name || ""}
-                placeholder={currentUserDog.name || ""}
-                fullWidth
-              />{" "}
-              <br />
-
-              <TextField
-                className={classes.field}
-                label="Year Of Birth"
-                variant="outlined"
-
-                defaultValue={currentUserDog.yob || ""}
-                placeholder={currentUserDog.yob || ""}
-
-                fullWidth
-                type="number"
-              />{" "}
-              <br />
-              <TextField
-                className={classes.field}
-                label="Breed"
-                variant="outlined"
-                defaultValue={currentUserDog.breed || ""}
-                placeholder={currentUserDog.breed || ""}
-
-                fullWidth
-              />
-              <br />
-              <TextField
-                className={classes.field}
-                label="Description"
-                variant="outlined"
-                defaultValue={currentUserDog.description || ""}
-                placeholder={currentUserDog.description || ""}
-
-                fullWidth
-                multiline
-                rows={3}
-              />
-              <TextField
-                className={classes.field}
-                label="Owner"
-                variant="outlined"
-                defaultValue={currentUserDog.ownerUsername || ""}
-                placeholder={currentUserDog.ownerUsername || ""}
-
-                fullWidth
-              />
-              <br />
-              <br />
-              <FormControl component="fieldset">
-                <FormLabel className={classes.formlabel}>Sex</FormLabel>
-                <RadioGroup
-                  row
-                  aria-label="gender"
-                  name="gender1"
-                  value={currentUserDog.sex}
-                  onChange={handleChangeRadio}
-                >
-                  <FormControlLabel
-                    value="Female"
-
-                    control={<Radio />}
-                    label="Female"
-                  />
-                  <FormControlLabel
-                    value="Male"
-
-                    control={<Radio />}
-                    label="Male"
-                  />
-                </RadioGroup>
-              </FormControl>
-              <br />
-              <Button
-                type="submit"
-                className={classes.field}
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Update profile
-              </Button>
-            </form>
+            <Formik
+              initialValues={{
+                ...INITIAL_DOG_FORM_STATE,
+              }}
+              validationSchema={DOG_FORM_VALIDATION}
+              onSubmit={handleSubmitDog}
+            >
+              <Form>
+                <Textfield name="name" label="Name" className={classes.field} />
+                <Textfield
+                  name="yob"
+                  label="Year of Birth"
+                  className={classes.field}
+                />
+                <Textfield
+                  name="description"
+                  label="Description"
+                  className={classes.field}
+                  multiline={true}
+                  rows={4}
+                />
+                <div className={classes.field}>
+                  <Typography variant="body1" color="inherit">
+                    Breed:
+                  </Typography>
+                  <Field
+                    name="breed"
+                    type="select"
+                    placeholder="breed"
+                    fullWidth
+                    as={Select}
+                  >
+                    <MenuItem value="Pomeranian">Pomeranian</MenuItem>
+                    <MenuItem value="Dachshund">Dachshund</MenuItem>
+                  </Field>
+                </div>
+                <div className={classes.field}>
+                  <Typography variant="body1" color="inherit">
+                    Sex:
+                  </Typography>
+                  <label>
+                    <Field name="sex" type="radio" value="Male" as={Radio} />
+                    Male
+                  </label>
+                  <label>
+                    <Field name="sex" type="radio" value="Female" as={Radio} />
+                    Female
+                  </label>
+                </div>
+                <Button>Update</Button>
+              </Form>
+            </Formik>
           </Paper>
         </Container>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Container>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Edit Password</Typography>
-            <form className={classes.form} noValidate autoComplete="off">
+            <Typography variant="h5" gutterBottom>Edit Password</Typography>
 
-              <br />
-              <TextField
-                className={classes.field}
-                label="Password"
-                type="password"
-                variant="outlined"
-
-                defaultValue={currentUser.password || ""}
-
-                fullWidth
-              />{" "}
-              <br />
-              <Button
-                type="submit"
-                className={classes.field}
-                color="secondary"
-                variant="contained"
-                size="large"
+             <Formik
+                initialValues={{
+                  ...INITIAL_ACCOUNT_FORM_STATE,
+                }}
+                validationSchema={ACCOUNT_FORM_VALIDATION}
+                onSubmit={handleSubmitPassword}
               >
-                Update
-              </Button>
-            </form>
+                <Form>
+                  <Textfield
+                    name="password"
+                    label="Password"
+                    type='password'
+                    className={classes.field}
+                  />
+                  <Button>Update password</Button>
+                </Form>
+              </Formik>
           </Paper>
         </Container>
       </TabPanel>
