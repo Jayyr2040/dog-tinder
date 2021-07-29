@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import { makeStyles, MenuItem } from "@material-ui/core";
-import Container from "@material-ui/core/Container";
+import {
+  Grid,
+  makeStyles,
+  MenuItem,
+  Paper,
+  Radio,
+  Select,
+  Typography,
+} from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Grid } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import { Typography } from "@material-ui/core";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import Textfield from "./FormsUI/Textfield";
-import { Radio } from "@material-ui/core";
-import { Select } from "@material-ui/core";
-import Button from "./FormsUI/Button";
+import Container from "@material-ui/core/Container";
 import Axios from "axios";
 import { Image } from "cloudinary-react";
+import { Field, Form, Formik } from "formik";
+import React, { useState } from "react";
+import * as Yup from "yup";
+import Button from "./FormsUI/Button";
+import Textfield from "./FormsUI/Textfield";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -24,7 +28,10 @@ const useStyles = makeStyles((theme) => ({
     padding: 40,
   },
   field: {
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: "center",
+    color: "grey",
   },
 }));
 
@@ -46,6 +53,7 @@ const FORM_VALIDATION = Yup.object().shape({
 
 export default function AddDog(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [displayImage, setDisplayImage] = useState(
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
@@ -88,6 +96,7 @@ export default function AddDog(props) {
       }
     };
     createDog();
+    history.push("/");
   };
 
   return (
@@ -115,17 +124,16 @@ export default function AddDog(props) {
                     publicId={displayImage}
                   />
                 )}
-                <button>
-                  <input
-                    name="image"
-                    type="file"
-                    onChange={(e) => {
-                      setUploadImage(e.target.files[0]);
-                    }}
-                    accept=".jpg,.jpeg,.gif,.png"
-                  />
-                  Choose an image
-                </button>
+                <input
+                  name="image"
+                  type="file"
+                  onChange={(e) => {
+                    setUploadImage(e.target.files[0]);
+                  }}
+                  accept=".jpg,.jpeg,.gif,.png"
+                />
+              </div>
+              <div className="image-uploader">
                 <button onClick={upload} class="upload-image-btn">
                   Upload Image
                 </button>
@@ -155,24 +163,39 @@ export default function AddDog(props) {
                     multiline={true}
                     rows={4}
                   />
-                  <Field
-                    name="breed"
-                    type="select"
-                    placeholder="breed"
-                    fullWidth
-                    as={Select}
-                  >
-                    <MenuItem value="Pomeranian">Pomeranian</MenuItem>
-                    <MenuItem value="Dachshund">Dachshund</MenuItem>
-                  </Field>
-                  <label>
-                    <Field name="sex" type="radio" value="Male" as={Radio} />
-                    Male
-                  </label>
-                  <label>
-                    <Field name="sex" type="radio" value="Female" as={Radio} />
-                    Female
-                  </label>
+                  <div className={classes.field}>
+                    <Typography variant="body1" color="inherit">
+                      Breed:
+                    </Typography>
+                    <Field
+                      name="breed"
+                      type="select"
+                      placeholder="breed"
+                      fullWidth
+                      as={Select}
+                    >
+                      <MenuItem value="Pomeranian">Pomeranian</MenuItem>
+                      <MenuItem value="Dachshund">Dachshund</MenuItem>
+                    </Field>
+                  </div>
+                  <div className={classes.field}>
+                    <Typography variant="body1" color="inherit">
+                      Sex:
+                    </Typography>
+                    <label>
+                      <Field name="sex" type="radio" value="Male" as={Radio} />
+                      Male
+                    </label>
+                    <label>
+                      <Field
+                        name="sex"
+                        type="radio"
+                        value="Female"
+                        as={Radio}
+                      />
+                      Female
+                    </label>
+                  </div>
                   <Button type="submit" variant="contained" color="secondary">
                     Submit
                   </Button>
