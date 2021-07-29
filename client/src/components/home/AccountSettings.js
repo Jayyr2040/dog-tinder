@@ -86,7 +86,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function VerticalTabs(props) {
+
+export default function AccountSettings(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -128,7 +129,6 @@ export default function VerticalTabs(props) {
         <Tab label="User Profile" {...a11yProps(0)} />
         <Tab label="Dog Profile" {...a11yProps(1)} />
         <Tab label="Account Settings" {...a11yProps(2)} />
-        <Tab label="Log Out" {...a11yProps(3)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <Container maxWidth="lg">
@@ -442,9 +442,6 @@ export default function VerticalTabs(props) {
             </form>
           </Paper>
         </Container>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <p>Log Out</p>
       </TabPanel>
     </div>
   );

@@ -4,6 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MatchRow from "../components/match/MatchRow";
 import MatchDetails from "../components/match/MatchDetails";
+import { Button, Typography } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Matches(props) {
   const [matchedList, setMatchedList] = useState([]);
@@ -26,6 +28,7 @@ export default function Matches(props) {
       setMatchedList(data);
     };
     fetchMatches();
+    // eslint-disable-next-line
   }, []);
 
   const handleToggle = (inputIndex) => {
@@ -86,10 +89,24 @@ export default function Matches(props) {
       <Box pt={3}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={5} md={6}>
-            {allMatches}
+            {matchedList.length > 0 ? (
+              allMatches
+            ) : (
+              <div>
+                <Typography>
+                  Looks like {props.currentUserDog?.name} no matches yet.
+                </Typography>
+                <br />
+                <RouterLink to="/browse" style={{ textDecoration: "none" }}>
+                  <Button color="secondary" variant="outlined">
+                    Browse {props.currentUserDog?.breed}s in your area
+                  </Button>
+                </RouterLink>
+              </div>
+            )}
           </Grid>
           <Grid item xs={12} sm={7} md={6}>
-            {selectedDogIndex >= 0 ? (
+            {selectedDogIndex >= 0 && matchedList.length > 0 ? (
               <MatchDetails
                 matchedList={matchedList}
                 selectedDog={selectedDogIndex}

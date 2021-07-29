@@ -3,6 +3,8 @@ import Grid from "@material-ui/core/Grid";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import Footer from "../components/home/Footer";
+import { Typography } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginTop: theme.spacing(6),
   },
+  signup: {
+    marginTop: theme.spacing(1),
+    textAlign: "center",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
 }));
 
 function Login(props) {
@@ -34,6 +42,17 @@ function Login(props) {
               loggedInUserData={(fullData) => props.loggedInUserData(fullData)}
               // loggedInDogData={(dogData) => props.loggedInDogData(dogData)}
             />
+          </Paper>
+          <Paper className={classes.signup} elevation={2}>
+            <Typography variant="subtitle2">
+              New to Dog Tinder?{" "}
+              <RouterLink
+                to="/register"
+                style={{ textDecoration: "none", color: "#d4524d" }}
+              >
+                Sign up!
+              </RouterLink>
+            </Typography>
           </Paper>
         </Grid>
       </Grid>
