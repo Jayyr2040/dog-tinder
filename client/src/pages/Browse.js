@@ -27,6 +27,7 @@ export default function Browse(props) {
   let loggedInDogID = props.currentUserDog?._id;
 
   const postSuggestionsReq = {
+    loggedInDogID: props.currentUserDog?._id,
     userLocation: props.currentUser?.location,
     dogBreed: props.currentUserDog?.breed,
     dogSex: props.currentUserDog?.sex === "Male" ? "Female" : "Male",
@@ -57,15 +58,15 @@ export default function Browse(props) {
     dogCounter === dogSuggestions.length - 1
       ? (dogCounter = 0)
       : (dogCounter += 1);
-    setCurrentDog(dogSuggestions[dogCounter]);
+    setCurrentDog(dogSuggestions[dogCounter < 1 ? 0 : dogCounter]);
   };
 
   const chooseLike = (likedDog) => {
     console.log(`Love ${likedDog.name}!`);
-    dogCounter === dogSuggestions.length - 1
-      ? (dogCounter = 0)
-      : (dogCounter += 1);
-    setCurrentDog(dogSuggestions[dogCounter]);
+    setDogSuggestions(dogSuggestions.splice(dogCounter, 1));
+    console.log(dogSuggestions);
+    // dogCounter === dogSuggestions.length ? (dogCounter = 0) : (dogCounter += 1);
+    setCurrentDog(dogSuggestions[0]);
     const likeDog = async () => {
       const res = await fetch("/likeevents", {
         method: "POST",

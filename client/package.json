@@ -8,13 +8,20 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+<<<<<<< HEAD
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+=======
+    "axios": "^0.21.1",
+    "cloudinary-react": "^1.7.0",
+    "formik": "^2.2.9",
+>>>>>>> 1abf541603aecf3088748d65b90b306185745588
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,106 +1,90 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/";
-import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { Grid } from "@material-ui/core/";
 import { Paper } from "@material-ui/core/";
 import { Typography } from "@material-ui/core/";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Textfield from "./FormsUI/Textfield";
+import Button from "./FormsUI/Button";
+import Checkbox from "@material-ui/core/Checkbox";
+import Axios from "axios";
+import { Image } from "cloudinary-react";
 
 const useStyles = makeStyles((theme) => ({
+  formWrapper: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(8),
+  },
   paper: {
     margin: theme.spacing(1),
     padding: 40,
   },
-  form: {
-    marginTop: 20,
-  },
   field: {
-    marginTop: 10,
+    marginBottom: 20,
   },
 }));
 
+const INITIAL_FORM_STATE = {
+  image: "",
+  fullName: "",
+  description: "",
+  location: [],
+};
+
+const FORM_VALIDATION = Yup.object().shape({
+  image: Yup.string(),
+  fullName: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+  location: Yup.array(),
+});
+
 export default function UpdateProfile(props) {
   const classes = useStyles();
-  const [updateUser, setUpdateUser] = useState();
-  const [buttonState, setButtonState] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState(
+  const [displayImage, setDisplayImage] = useState(
     "https://image.flaticon.com/icons/png/512/848/848043.png"
   );
+  const [uploadImage, setUploadImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fullNameError, setfullNameError] = useState(false);
-  const [locationError, setLocationError] = useState(false);
-  const [descriptionError, setDescriptionError] = useState(false);
 
-  const checkFormErrors = () => {
-    setfullNameError(false);
-    setLocationError(false);
-    setDescriptionError(false);
-    if (updateUser.fullName === "") {
-      setfullNameError(true);
-    }
-    if (updateUser.location === "") {
-      setLocationError(true);
-    }
-    if (updateUser.description === "") {
-      setDescriptionError(true);
-    }
-  };
+  const upload = () => {
+    const formData = new FormData();
+    formData.append("file", uploadImage);
+    formData.append("upload_preset", "dog_tinder_users");
+    setLoading(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    checkFormErrors();
-    if (updateUser.image && updateUser.location && updateUser.description) {
-      setButtonState(true);
-      const createNewAccount = async () => {
-        try {
-          const res = await fetch(
-            "/users/" + props.userId,
-            {
-              method: "PUT",
-              body: JSON.stringify(updateUser),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const data = await res.json();
-          props.updateProfile();
-          console.log(data);
-        } catch (error) {
-          console.log(error);
-          setButtonState(false);
-        }
-      };
-      createNewAccount();
-    }
-  };
-
-  const uploadImage = (e) => {
-    const fetchImageURL = async () => {
-      const files = e.target.files;
-      const data = new FormData();
-      data.append("file", files[0]);
-      data.append("upload_preset", "dog_tinder_users");
-      setLoading(true);
-
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-
-      const file = await res.json();
-      console.log(file.secure_url);
-
-      setUploadedImage(file.secure_url);
-      setUpdateUser({ ...updateUser, image: file.secure_url });
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImage(response.data.secure_url);
       setLoading(false);
+    });
+  };
+
+  const handleSubmit = (formValue) => {
+    const imageURL = { image: displayImage };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
+    const createNewAccount = async () => {
+      try {
+        const res = await fetch("http://localhost:3003/users/" + props.userId, {
+          method: "PUT",
+          body: JSON.stringify(merge),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        props.updateProfile();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    fetchImageURL();
+    createNewAccount();
   };
 
   return (
@@ -112,79 +96,116 @@ export default function UpdateProfile(props) {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={8} md={6} lg={6}>
           <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5">Update Account Details</Typography>
-            <form
-              className={classes.form}
-              noValidate
-              autoComplete="off"
-              onSubmit={handleSubmit}
-            >
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <img
-                  src={uploadedImage}
-                  style={{ height: "280px", width: "280px" }}
-                  alt=""
-                />
-              )}
-              <Button variant="contained" component="label">
-                Upload File
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload an image"
-                  onChange={uploadImage}
-                  hidden
-                />
-              </Button>
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, fullName: e.target.value })
-                }
-                className={classes.field}
-                label="Full Name"
-                variant="outlined"
-                error={fullNameError}
-                fullWidth
-              />{" "}
-              <br />
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, location: e.target.value })
-                } // destructure -> array setUpdateUser({ ...updateUser, location: ["North"]})
-                className={classes.field}
-                label="Location"
-                variant="outlined"
-                fullWidth
-                error={locationError}
-              />
-              <br />
-              <TextField
-                onChange={(e) =>
-                  setUpdateUser({ ...updateUser, description: e.target.value })
-                }
-                className={classes.field}
-                label="Description"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                error={descriptionError}
-              />
-              <Button
-                type="submit"
-                className={classes.field}
-                color="secondary"
-                variant="contained"
-                size="large"
-                disabled={buttonState}
+            <Typography variant="h5" align="center">
+              Sign up for account
+            </Typography>
+            <div className={classes.formWrapper}>
+              <div className="image-uploader">
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImage}
+                  />
+                )}
+                <div>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImage(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
+                  />
+                </div>
+                <button onClick={upload} class="upload-image-btn">
+                  Upload Image
+                </button>
+              </div>
+              <Formik
+                initialValues={{
+                  ...INITIAL_FORM_STATE,
+                }}
+                validationSchema={FORM_VALIDATION}
+                onSubmit={handleSubmit}
               >
-                Update profile
-              </Button>
-            </form>
+                <Form>
+                  <Textfield
+                    name="fullName"
+                    label="Full Name"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="description"
+                    label="Description"
+                    className={classes.field}
+                    multiline={true}
+                    rows={4}
+                  />
+                  <div className="checkboxes">
+                    <div className="checkboxes-row-1">
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="North"
+                          value="North"
+                          as={Checkbox}
+                        />
+                        North
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="South"
+                          value="South"
+                          as={Checkbox}
+                        />
+                        South
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="East"
+                          value="East"
+                          as={Checkbox}
+                        />
+                        East
+                      </label>
+                    </div>
+                    <div className="checkboxes-row-2">
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="West"
+                          value="West"
+                          as={Checkbox}
+                        />
+                        West
+                      </label>
+                      <label>
+                        <Field
+                          name="location"
+                          type="checkbox"
+                          placeholder="Central"
+                          value="Central"
+                          as={Checkbox}
+                        />
+                        Central
+                      </label>
+                    </div>
+                  </div>
+                  <Button>Submit Form</Button>
+                </Form>
+              </Formik>
+            </div>
           </Paper>
         </Grid>
       </Grid>

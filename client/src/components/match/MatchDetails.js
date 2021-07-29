@@ -48,7 +48,6 @@ export default function MatchDetails(props) {
 
   const showOwnerContact = () => {
     setOpenModal(true);
-    console.log(props.ownerDetails?.[0]?.email);
   };
 
   const handleCloseModal = () => {

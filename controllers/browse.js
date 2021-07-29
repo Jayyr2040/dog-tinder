@@ -12,8 +12,35 @@ Step 3: Find Dogs whose sex is opposite of user's dog
 Step 4: Find Dogs whose breed is same as user's dog
 */
 
+const alreadyLiked = [
+  "6100f6f946ef971451c9a05c",
+  "6100f6f946ef971451c9a069",
+  "6100f6f946ef971451c9a06b",
+];
+
+const allSuggestions = [
+  "6100f6f946ef971451c9a05c",
+  "6100f6f946ef971451c9a069",
+  "6100f6f946ef971451c9a06b",
+  "6100f6f946ef971451c9a071",
+  "6100f6f946ef971451c9a072",
+  "6100f6f946ef971451c9a073",
+  "6100f6f946ef971451c9a074",
+  "6100f6f946ef971451c9a064",
+  "6100f6f946ef971451c9a05d",
+  "6100f6f946ef971451c9a05f",
+  "6100f6f946ef971451c9a061",
+];
+
+const answer = allSuggestions.filter((el) => !alreadyLiked.includes(el));
+console.log(answer.length);
+
+const filterDogs = (allSuggestions, alreadyLiked) => {
+  allSuggestions.filter((el) => !alreadyLiked.includes(el));
+};
+
 // Browse
-router.post("/", (req, res) => {
+router.post("/archive", (req, res) => {
   User.find({ location: { $in: req.body.userLocation } }, (err, foundUsers) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -37,6 +64,7 @@ router.post("/", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 
 
 function checkAdult(age) {
@@ -46,6 +74,10 @@ function checkAdult(age) {
 
 
 router.post("/test2", (req, res) => {
+=======
+// New Test
+router.post("/", (req, res) => {
+>>>>>>> 1abf541603aecf3088748d65b90b306185745588
   User.find({ location: { $in: req.body.userLocation } }, (err, foundUsers) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -70,7 +102,11 @@ router.post("/test2", (req, res) => {
             if (err) {
               res.status(400).json({ error: err.message });
             }
+<<<<<<< HEAD
             res.status(200).json(suggestions.length);
+=======
+            res.status(200).json(suggestions);
+>>>>>>> 1abf541603aecf3088748d65b90b306185745588
           }
         );
       }
@@ -78,6 +114,7 @@ router.post("/test2", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 
 
 router.get("/", (req, res) => {
@@ -142,6 +179,8 @@ router.post("/test", (req, res) => {
 
 
 
+=======
+>>>>>>> 1abf541603aecf3088748d65b90b306185745588
 module.exports = router;
 
 
