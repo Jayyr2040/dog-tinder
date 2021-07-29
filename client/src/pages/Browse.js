@@ -30,12 +30,14 @@ export default function Browse(props) {
     userLocation: props.currentUser?.location,
     dogBreed: props.currentUserDog?.breed,
     dogSex: props.currentUserDog?.sex === "Male" ? "Female" : "Male",
+
+    loggedInDogID: loggedInDogID,
   };
 
   useEffect(() => {
     console.log(postSuggestionsReq);
     const fetchDogs = async () => {
-      const res = await fetch("/browse", {
+      const res = await fetch("/browse/test", {
         method: "POST",
         body: JSON.stringify(postSuggestionsReq),
         headers: {
