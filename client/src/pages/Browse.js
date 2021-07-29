@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ShowDog from "../components/browse/ShowDog";
 import Grid from "@material-ui/core/Grid";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -61,10 +61,13 @@ export default function Browse(props) {
 
   const chooseLike = (likedDog) => {
     console.log(`Love ${likedDog.name}!`);
-    setDogSuggestions(dogSuggestions.splice(dogCounter, 1));
-    console.log(dogSuggestions);
-    // dogCounter === dogSuggestions.length ? (dogCounter = 0) : (dogCounter += 1);
-    setCurrentDog(dogSuggestions[0]);
+    const updatedSuggestions = dogSuggestions.filter(
+      (dog) => dog._id !== likedDog._id
+    );
+    console.log(updatedSuggestions);
+    setDogSuggestions(updatedSuggestions);
+    dogCounter === 0 ? (dogCounter = 1) : (dogCounter = 0);
+    setCurrentDog(dogSuggestions[dogCounter]);
     const likeDog = async () => {
       const res = await fetch("/likeevents", {
         method: "POST",
@@ -90,31 +93,37 @@ export default function Browse(props) {
         style={{ minHeight: "80vh" }}
       >
         <Grid item md={12}>
-          <Fade in={true} timeout={1000} style={{ transitionDelay: "500ms" }}>
+          {dogSuggestions.length > 0 ? (
             <ShowDog
               currentDog={currentDog}
               chooseDislike={chooseDislike}
               chooseLike={chooseLike}
             />
-          </Fade>
+          ) : (
+            "Looks like you've liked all the dogs in your area."
+          )}
         </Grid>
         <Grid item md={12}>
-          <Fab
-            color="inherit"
-            aria-label="dislike"
-            className={classes.fab}
-            onClick={() => chooseDislike()}
-          >
-            <ClearIcon color="secondary" style={{ fontSize: 30 }} />
-          </Fab>
-          <Fab
-            color="inherit"
-            aria-label="like"
-            className={classes.fab}
-            onClick={() => chooseLike(currentDog)}
-          >
-            <FavoriteIcon color="primary" style={{ fontSize: 25 }} />
-          </Fab>
+          {dogSuggestions.length > 0 && (
+            <div>
+              <Fab
+                color="inherit"
+                aria-label="dislike"
+                className={classes.fab}
+                onClick={() => chooseDislike()}
+              >
+                <ClearIcon color="secondary" style={{ fontSize: 30 }} />
+              </Fab>
+              <Fab
+                color="inherit"
+                aria-label="like"
+                className={classes.fab}
+                onClick={() => chooseLike(currentDog)}
+              >
+                <FavoriteIcon color="primary" style={{ fontSize: 25 }} />
+              </Fab>
+            </div>
+          )}
         </Grid>
       </Grid>
     </div>

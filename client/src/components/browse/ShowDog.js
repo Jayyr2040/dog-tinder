@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: "50px",
+    paddingTop: "30px",
     display: "flex",
     flexWrap: "wrap",
     "& > *": {
