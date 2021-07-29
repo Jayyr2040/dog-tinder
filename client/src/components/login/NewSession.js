@@ -20,6 +20,7 @@ const useStyles = makeStyles({
   },
   footer: {
     marginTop: 40,
+    paddingBottom: 40,
   },
 });
 
