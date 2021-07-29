@@ -9,6 +9,7 @@ import NavBar from "./components/home/NavBar";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
 import "./App.css";
+import Settings from "./pages/Settings";
 
 const theme = createMuiTheme({
   palette: {
@@ -90,6 +91,9 @@ function App() {
             </Route>
             <Route path="/matches">
               {loggedInStatus ? <Matches /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/settings">
+              {loggedInStatus ? <Settings /> : <Redirect to="/login" />}
             </Route>
             <Redirect to="/" />
           </Switch>

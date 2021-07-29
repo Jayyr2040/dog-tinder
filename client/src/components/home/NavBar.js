@@ -122,9 +122,12 @@ export default function NavBar(props) {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>Edit Profile</MenuItem>
-              <MenuItem onClick={handleClose}>Account Settings</MenuItem>
+              <RouterLink
+                to="/settings"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+              </RouterLink>
               <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
             </Menu>
           </div>
