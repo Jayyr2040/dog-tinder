@@ -1,134 +1,93 @@
 import React, { useState } from "react";
-import { FormControlLabel, FormLabel, makeStyles } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+import { makeStyles, MenuItem } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Grid } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
-import { FormControl } from "@material-ui/core";
-import { RadioGroup } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Textfield from "./FormsUI/Textfield";
 import { Radio } from "@material-ui/core";
+import { Select } from "@material-ui/core";
+import Button from "./FormsUI/Button";
+import Axios from "axios";
+import { Image } from "cloudinary-react";
 
 const useStyles = makeStyles((theme) => ({
+  formWrapper: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(8),
+  },
   paper: {
     margin: theme.spacing(1),
     padding: 40,
   },
-  form: {
-    marginTop: 20,
-  },
   field: {
-    marginTop: 10,
-  },
-  formControl: {
-    margin: theme.spacing(3),
-  },
-  group: {
-    margin: theme.spacing(1, 0),
+    marginBottom: 20,
   },
 }));
 
+const INITIAL_FORM_STATE = {
+  name: "",
+  breed: "",
+  sex: "",
+  yob: null,
+  description: "",
+};
+
+const FORM_VALIDATION = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  breed: Yup.string(),
+  sex: Yup.string().required("Required"),
+  yob: Yup.number().min(2010).max(2019),
+  description: Yup.string(),
+});
+
 export default function AddDog(props) {
   const classes = useStyles();
-  const [uploadedImage, setUploadedImage] = useState(
+  const [displayImage, setDisplayImage] = useState(
     "https://image.flaticon.com/icons/png/512/1581/1581594.png"
   );
-  const [dogData, setDogData] = useState({ 
-    sex: "Female",
-    owner: props.userId 
-  });
-  const [value, setValue] = useState("Female");
-  const [buttonState, setButtonState] = useState(false);
+  const [uploadImage, setUploadImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [dogNameError, setDogNameError] = useState(false);
-  const [breedError, setBreedError] = useState(false);
-  const [yobError, setYobError] = useState(false);
-  const [descriptionError, setDescriptionError] = useState(false);
 
-  const checkFormErrors = () => {
-    setDogNameError(false);
-    setBreedError(false);
-    setYobError(false);
-    setDescriptionError(false);
-    if (dogData.name === "") {
-      setDogNameError(true);
-    }
-    if (dogData.breed === "") {
-      setBreedError(true);
-    }
-    if (dogData.yob === 0) {
-      setYobError(true);
-    }
-    if (dogData.description === "") {
-      setDescriptionError(true);
-    }
-  };
+  const upload = () => {
+    const formData = new FormData();
+    formData.append("file", uploadImage);
+    formData.append("upload_preset", "dog_tinder_users");
+    setLoading(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(dogData);
-    checkFormErrors();
-    if (
-      dogData.name &&
-      dogData.breed &&
-      dogData.yob &&
-      dogData.description
-    ) {
-      setButtonState(true);
-      const createDog = async () => {
-        try {
-          const res = await fetch("/dogs", {
-            method: "POST",
-            body: JSON.stringify(dogData),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          const data = await res.json();
-          console.log(data);
-          props.addDog(data);
-        } catch (error) {
-          console.log(error);
-          setButtonState(false);
-        }
-      };
-      createDog();
-    } else {
-      console.log("Add dog failed");
-    }
-  };
-
-  const uploadImage = (e) => {
-    const fetchImageURL = async () => {
-      const files = e.target.files;
-      const data = new FormData();
-      data.append("file", files[0]);
-      data.append("upload_preset", "dog_tinder_dogs");
-      setLoading(true);
-
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
-
-      const file = await res.json();
-      console.log(file.secure_url);
-
-      setUploadedImage(file.secure_url);
-      setDogData({ ...dogData, image: file.secure_url });
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dsag331qk/image/upload",
+      formData
+    ).then((response) => {
+      setDisplayImage(response.data.secure_url);
       setLoading(false);
-    };
-    fetchImageURL();
+    });
   };
 
-  const handleChange = (e) => {
-      setValue(e.target.value);
-      setDogData({ ...dogData, sex: value });
-      console.log(dogData);
+  const handleSubmit = (formValue) => {
+    const imageURL = { image: displayImage };
+    let merge = { ...formValue, ...imageURL };
+    console.log(merge);
+    const createDog = async () => {
+      try {
+        const res = await fetch("http://localhost:3003/dogs/", {
+          method: "POST",
+          body: JSON.stringify(merge),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data);
+        props.addDog(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createDog();
   };
 
   return (
@@ -140,105 +99,86 @@ export default function AddDog(props) {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={8} md={6} lg={6}>
           <Paper elevation={5} className={classes.paper}>
-            <h2>Add your dog</h2>
-            <form className={classes.form} onSubmit={handleSubmit}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <img
-                  src={uploadedImage}
-                  style={{ height: "280px", width: "280px" }}
-                  alt=""
-                />
-              )}
-              <Button variant="contained" component="label">
-                Upload File
-                <input
-                  type="file"
-                  name="file"
-                  placeholder="Upload an image"
-                  onChange={uploadImage}
-                  hidden
-                />
-              </Button>
-              <TextField
-                onChange={(e) =>
-                  setDogData({ ...dogData, name: e.target.value })
-                }
-                label="Name of Doggo"
-                variant="outlined"
-                error={dogNameError}
-                fullWidth
-                className={classes.field}
-              />
-              <TextField
-                onChange={(e) =>
-                  setDogData({ ...dogData, breed: e.target.value })
-                }
-                label="Breed"
-                variant="outlined"
-                error={breedError}
-                className={classes.field}
-                fullWidth
-              />
-              <TextField
-                onChange={(e) =>
-                  setDogData({ ...dogData, yob: e.target.value })
-                }
-                label="Year of Birth"
-                variant="outlined"
-                error={yobError}
-                className={classes.field}
-                type="number"
-                fullWidth
-              />
-              <TextField
-                onChange={(e) =>
-                  setDogData({ ...dogData, description: e.target.value })
-                }
-                label="Description"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                className={classes.field}
-                error={descriptionError}
-              />
-              <FormControl component="fieldset" className={classes.formControl}>
-                <FormLabel component="legend">Sex</FormLabel>
-                <RadioGroup
-                  className={classes.group}
-                  aria-label="gender"
-                  name="gender1"
-                  value={value}
-                  onChange={handleChange}
-                  row
-                >
-                  <FormControlLabel
-                    value="Male"
-                    control={<Radio />}
-                    label="Male"
+            <Typography variant="h5" align="center">
+              Sign up for account
+            </Typography>
+            <div className={classes.formWrapper}>
+              <div className="image-uploader">
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Image
+                    cloudName="dsag331qk"
+                    style={{ height: "280px", width: "280px" }}
+                    publicId={displayImage}
                   />
-                  <FormControlLabel
-                    value="Female"
-                    control={<Radio />}
-                    label="Female"
+                )}
+                <button>
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      setUploadImage(e.target.files[0]);
+                    }}
+                    accept=".jpg,.jpeg,.gif,.png"
                   />
-                </RadioGroup>
-              </FormControl>
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
-                className={classes.field}
-                disabled={buttonState}
+                  Choose an image
+                </button>
+                <button onClick={upload} class="upload-image-btn">
+                  Upload Image
+                </button>
+              </div>
+              <Formik
+                initialValues={{
+                  ...INITIAL_FORM_STATE,
+                }}
+                validationSchema={FORM_VALIDATION}
+                onSubmit={handleSubmit}
               >
-                Add dog
-              </Button>
-            </form>
+                <Form>
+                  <Textfield
+                    name="name"
+                    label="Name"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="yob"
+                    label="Year of Birth"
+                    className={classes.field}
+                  />
+                  <Textfield
+                    name="description"
+                    label="Description"
+                    className={classes.field}
+                    multiline={true}
+                    rows={4}
+                  />
+                  <Field
+                    name="breed"
+                    type="select"
+                    placeholder="breed"
+                    fullWidth
+                    as={Select}
+                  >
+                    <MenuItem value="Pomeranian">Pomeranian</MenuItem>
+                    <MenuItem value="Dachshund">Dachshund</MenuItem>
+                  </Field>
+                  <label>
+                    <Field name="sex" type="radio" value="Male" as={Radio} />
+                    Male
+                  </label>
+                  <label>
+                    <Field name="sex" type="radio" value="Female" as={Radio} />
+                    Female
+                  </label>
+                  <Button type="submit" variant="contained" color="secondary">
+                    Submit
+                  </Button>
+                </Form>
+              </Formik>
+            </div>
           </Paper>
         </Grid>
       </Grid>

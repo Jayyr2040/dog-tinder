@@ -68,6 +68,7 @@ app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
 app.use("/matches", matchesController);
 app.use("/sessions", sessionsController);
+app.use("/register", registerController);
 
 app.listen(PORT, () => {
   console.log("Dog matching 🐶 happening on port", PORT);
