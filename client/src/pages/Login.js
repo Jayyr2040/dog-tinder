@@ -31,7 +31,8 @@ function Login(props) {
         <Grid item xs={12} sm={6} md={6}>
           <Paper className={classes.root} elevation={2}>
             <NewSession
-              loggedInUserData={(userData) => props.loggedInUserData(userData)}
+              loggedInUserData={(fullData) => props.loggedInUserData(fullData)}
+              // loggedInDogData={(dogData) => props.loggedInDogData(dogData)}
             />
           </Paper>
         </Grid>

@@ -59,11 +59,14 @@ const usersController = require("./controllers/users");
 const dogsController = require("./controllers/dogs");
 const likeEventsController = require("./controllers/likeEvents");
 const browseController = require("./controllers/browse");
+const matchesController = require("./controllers/matches.js");
 const sessionsController = require("./controllers/sessions.js");
+
 app.use("/users", usersController);
 app.use("/dogs", dogsController);
 app.use("/likeevents", likeEventsController);
 app.use("/browse", browseController);
+app.use("/matches", matchesController);
 app.use("/sessions", sessionsController);
 
 app.listen(PORT, () => {

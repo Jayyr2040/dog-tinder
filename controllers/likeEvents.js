@@ -23,13 +23,16 @@ router.post("/", (req, res) => {
 });
 
 // DELETE
-router.delete("/:id", (req, res) => {
-  LikeEvent.findByIdAndRemove(req.params.id, (err, deletedEvent) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
+router.delete("/", (req, res) => {
+  LikeEvent.findOneAndRemove(
+    { liker: req.body.myDogID, likee: req.body.otherDogID },
+    (err, deletedEvent) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      }
+      res.status(200).json(deletedEvent);
     }
-    res.status(200).json(deletedEvent);
-  });
+  );
 });
 
 module.exports = router;
