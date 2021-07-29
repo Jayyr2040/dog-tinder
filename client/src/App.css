@@ -8,24 +8,22 @@ body {
 
 .upload-image-btn {
   margin: 20px;
-  padding: 5px 15px;
+  padding: 10px 20px;
   font-size: 14px;
   text-align: center;
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #6e1863;
+  background-color: #d4524d;
   border: none;
-  border-radius: 15px;
-  box-shadow: 0 9px #999;
+  border-radius: 5px;
 }
 
 .upload-image-btn:hover {
-  background-color: #9b41a3;
+  background-color: #a34149;
 }
 
 .upload-image-btn:active {
-  background-color: #9b41a3;
-  box-shadow: 0 5px #666;
+  background-color: #a34146;
   transform: translateY(4px);
 }

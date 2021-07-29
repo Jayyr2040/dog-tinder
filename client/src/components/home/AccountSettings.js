@@ -18,7 +18,6 @@ import * as Yup from "yup";
 import Button from "../register/FormsUI/Button";
 import Textfield from "../register/FormsUI/Textfield";
 
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 

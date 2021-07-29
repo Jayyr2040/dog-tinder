@@ -12,15 +12,13 @@ import Textfield from "./FormsUI/Textfield";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(8),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   paper: {
-    margin: theme.spacing(1),
-    padding: 40,
+    padding: 35,
   },
   field: {
-    marginBottom: 10,
     marginTop: 10,
     textAlign: "center",
     color: "grey",
@@ -44,7 +42,7 @@ const FORM_VALIDATION = Yup.object().shape({
 export default function UpdateProfile(props) {
   const classes = useStyles();
   const [displayImage, setDisplayImage] = useState(
-    "https://image.flaticon.com/icons/png/512/848/848043.png"
+    "https://i.ibb.co/jg6GNTb/user.png"
   );
   const [uploadImage, setUploadImage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,16 +68,13 @@ export default function UpdateProfile(props) {
     console.log(merge);
     const createNewAccount = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:3003/users/" + props.userData._id,
-          {
-            method: "PUT",
-            body: JSON.stringify(merge),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch("/users/" + props.userData._id, {
+          method: "PUT",
+          body: JSON.stringify(merge),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
         props.updateProfile();
         console.log(data);
@@ -100,9 +95,20 @@ export default function UpdateProfile(props) {
         alignItems="center"
       >
         <Grid item xs={12} sm={8} md={6} lg={6}>
-          <Paper elevation={5} className={classes.paper}>
-            <Typography variant="h5" align="center">
-              Sign up for account
+          <Paper className={classes.paper}>
+            <Grid container justify="center">
+              <img
+                src="https://i.ibb.co/KjSLSwS/logo.png"
+                height="60"
+                alt="logo"
+              />
+            </Grid>
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ color: "grey", marginTop: 10, marginBottom: 20 }}
+            >
+              Describe a little about yourself
             </Typography>
             <div className={classes.formWrapper}>
               <div className="image-uploader">
