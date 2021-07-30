@@ -13,13 +13,18 @@ each other.
 ### Built With
 
 1. MongoDB
-   - Mongoose
    - Atlas Cloud
+   - Mongoose
+1. Cloudinary
 1. Express
+   - Sessions
+   - bcrypt
 1. React
    - Hooks: useState, useEffect
+   - React Router Dom
    - Material-UI
    - Formik
+   - Yup
 1. Node
 1. AJAX/Axios
 1. Heroku
